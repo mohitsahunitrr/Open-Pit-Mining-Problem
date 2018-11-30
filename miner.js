@@ -14,9 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   Vertex.prototype.render = function(ctx){
     ctx.beginPath();
     ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
-    // ctx.strokeStyle = "purple";
-    // ctx.inedWidth = 1;
-    // ctx.stroke();
     ctx.fillStyle = "red";
     ctx.fill();
   }
@@ -39,6 +36,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
+  const matrix = [
+    [0,0,1,1,1,0],
+    [0,0,0,1,1,1],
+    [0,0,0,0,0,0],
+    [0,0,0,0,0,0],
+    [0,0,0,0,0,0],
+    [0,0,0,0,0,0]
+  ]
+
   const vertices = [
     new Vertex(300,300,20),
     new Vertex(500,300,20),
@@ -48,15 +54,33 @@ document.addEventListener("DOMContentLoaded", () => {
     new Vertex(500,100,20),
     new Vertex(700,100,20)
   ]
+  const edges = [];
 
-  const edges = [
-    new Edge(vertices[4],vertices[0]),
-    new Edge(vertices[4],vertices[1]),
-    new Edge(vertices[4],vertices[2]),
-    new Edge(vertices[5],vertices[1]),
-    new Edge(vertices[5],vertices[2]),
-    new Edge(vertices[5],vertices[3])
-  ]
+  const generateEdgesFromMatrix = function(matrix){
+    matrix.forEach((row, i) => {
+      row.forEach((el, j) => {
+        if (el > 0){
+          edges.push(new Edge(vertices[i],vertices[j]));
+        }
+      })
+    })
+  }
+
+  generateEdgesFromMatrix(matrix);
+
+
+  // const edges = [
+  //   new Edge(vertices[4],vertices[0]),
+  //   new Edge(vertices[4],vertices[1]),
+  //   new Edge(vertices[4],vertices[2]),
+  //   new Edge(vertices[5],vertices[1]),
+  //   new Edge(vertices[5],vertices[2]),
+  //   new Edge(vertices[5],vertices[3])
+  // ]
+
+  edges.forEach((edge) => {
+    edge.render(ctx);
+  })
 
   vertices.forEach((vertex) => {
     vertex.render(ctx);
