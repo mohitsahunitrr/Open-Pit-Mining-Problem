@@ -14,9 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
   Vertex.prototype.render = function(ctx){
     ctx.beginPath();
     ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
-    ctx.strokeStyle = "purple";
-    ctx.inedWidth = 1;
-    ctx.stroke();
+    // ctx.strokeStyle = "purple";
+    // ctx.inedWidth = 1;
+    // ctx.stroke();
     ctx.fillStyle = "red";
     ctx.fill();
   }
@@ -27,25 +27,48 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   Edge.prototype.render = function(ctx){
-    const height = 10;
-    ctx.fillStyle = "purple";
-    const xCoord = this.v1.x;
-    const yCoord = this.v1.y - (height/2);
-    const width = this.v2.x - this.v1.x - this.v2.r - 20;
-    ctx.fillRect(xCoord, yCoord, width, height);
+    ctx.beginPath();
+    ctx.moveTo(this.v1.x,this.v1.y);
+    ctx.lineTo(this.v2.x,this.v2.y);
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = "purple";
+    ctx.stroke();
   }
 
   const EdgeArrow = function(v1,v2){
 
   }
 
-  const v1 = new Vertex(100,100,20);
-  const v2 = new Vertex(300,100,20);
-  const e1 = new Edge(v1,v2);
+  const vertices = [
+    new Vertex(300,300,20),
+    new Vertex(500,300,20),
 
-  e1.render(ctx);
-  v1.render(ctx);
-  v2.render(ctx);
+    new Vertex(100,100,20),
+    new Vertex(300,100,20),
+    new Vertex(500,100,20),
+    new Vertex(700,100,20)
+  ]
+
+  const edges = [
+    new Edge(vertices[4],vertices[0]),
+    new Edge(vertices[4],vertices[1]),
+    new Edge(vertices[4],vertices[2]),
+    new Edge(vertices[5],vertices[1]),
+    new Edge(vertices[5],vertices[2]),
+    new Edge(vertices[5],vertices[3])
+  ]
+
+  vertices.forEach((vertex) => {
+    vertex.render(ctx);
+  })
+
+  // v1.render(ctx);
+  // v2.render(ctx);
+  // v3.render(ctx);
+  // v4.render(ctx);
+  // v5.render(ctx);
+  // v6.render(ctx);
+
 
 
 
