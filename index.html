@@ -2,12 +2,27 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <script type="text/javascript" src="edmonds-karp.js"></script>
-    <script type="text/javascript" src="miner.js">
-
-    </script>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="./dist/bundle.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
   </head>
   <body>
-    <canvas id="canvas" width="900" height="900"></canvas>
+    <style media="screen">
+        /* body {
+          background: #042029;
+        } */
+    </style>
+    <button type="button" name="button" onclick="transition()">Transition</button>
+    <script type="text/javascript">
+      let svg = d3.select("body").append("svg").attr("width", 500).attr("height", 500);
+
+      let circle = svg.append("circle").attr("cx", 50).attr("cy", 50).attr("r", 25).style("fill", "red");
+
+      function transition(){
+        circle.transition().duration(1000).style("fill", "black");
+      }
+    </script>
+
+    </svg>
   </body>
 </html>

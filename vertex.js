@@ -1,17 +1,32 @@
-const Vertex = (x,y,r) => {
+// const Vertex = (x,y,r) => {
+//   this.x = x,
+//   this.y = y,
+//   this.r = r,
+// }
+//
+// Circle.prototype.render = (ctx) => {
+//   ctx.beginPath();
+//   ctx.arc(100,100,100,0,2*Math.PI);
+//   ctx.strokeStyle = "purple";
+//   ctx.inedWidth = 1;
+//   ctx.stroke();
+//   ctx.fillStyle = "red";
+//   ctx.fill();
+// }
+//
+
+const Vertex = function(x,y,r){
   this.x = x,
   this.y = y,
-  this.r = r,
+  this.r = r
 }
 
-Circle.prototype.render = (ctx) => {
+Vertex.prototype.render = function(ctx){
   ctx.beginPath();
-  ctx.arc(100,100,100,0,2*Math.PI);
-  ctx.strokeStyle = "purple";
-  ctx.inedWidth = 1;
-  ctx.stroke();
+  ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
   ctx.fillStyle = "red";
   ctx.fill();
 }
 
-module.export = Vertex;
+module.exports = Vertex;
+// export default Vertex;
