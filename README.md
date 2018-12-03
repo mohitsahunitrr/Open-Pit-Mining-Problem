@@ -1,9 +1,13 @@
 # Open-Pit-Mining-Problem
 
 Still ToDo:
+
 -Add edge capacity labels to graph
+
 -Add Pit diagram to visualize the problem
+
 -Make the pit diagram interactive
+
 -Add slider bar to change how quickly the animation runs
 
 This project implements an animation demonstrating how network flows can be utilized to solve the Open Pit Mining problem, a type of project scheduling problem.
