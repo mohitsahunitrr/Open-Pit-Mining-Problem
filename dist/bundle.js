@@ -290,11 +290,14 @@ document.addEventListener("DOMContentLoaded", () => {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+// const EK = require("./ek-animated.js");
+
+
 const draw3 = function(){
   let width = 900,
       height = 900;
 
-  let animationInterval = 100;
+  animationInterval = 100;
 
   let matrix = [
     [0,4,1,1,0,0,0,0,0,0],
@@ -355,35 +358,40 @@ const draw3 = function(){
     infCapacity = infCapacity + 1;
   }
 
+  let linkIdIdx = 0;
   //creates links with finite capacities
   const setFiniteLinks = () => {
     nodes.forEach((node,i) => {
       // debugger
       if (node.label !== "s" && node.label !== "t"){
         if (node.profit > 0){
-          links.push({source: 0, target: i, capacity: node.profit})
+          links.push({source: 0, target: i, res: 0, capacity: node.profit})
         }else{
-          links.push({source: i, target: (nodes.length-1), capacity: (-1 * node.profit), res: 0})
+          links.push({source: i, target: (nodes.length-1), capacity: (-1 * node.profit), res: 0, id: linkIdIdx})
         }
       }
+      linkIdIdx = linkIdIdx + 1;
     })
   }
   //creates links with infinite capacities
   const setInfiniteLinks = () => {
     restrictions.forEach(restriction => {
-      links.push({source: restriction.source, target: restriction.target, capacity: infCapacity})
+      links.push({source: restriction.source, target: restriction.target, res: 0, capacity: infCapacity, id: linkIdIdx})
+      linkIdIdx = linkIdIdx + 1;
     })
   }
-
   simulateInfCapacity();
   setInfiniteLinks();
   setFiniteLinks();
+  // debugger
 
   //create object for manipulation
   let svg = d3.select('body').append('svg')
       .attr('width', width)
       .attr('height', height);
 
+
+  // debugger
   //apply force conditions
   let force = d3.layout.force()
       .size([width, height])
@@ -397,11 +405,27 @@ const draw3 = function(){
       .linkStrength(0.1)
       .start();
 
+      // link.append("linkLabel")
+      //   .append("text")
+      //   .attr("class","linkLabel")
+      //   .attr("x","50")
+      //   .attr("y","-20")
+      //   .attr("text-anchor","start")
+      //   .style("fill","#000")
+      //   .attr("xlink:href",function(d,i){
+      //     debugger
+      //     return `#linkId_${i}`;})
+      //   .text(function(d) {
+      //     return d.id;
+      //   })
+
   //create links
-  let link = svg.selectAll('.link')
-      .data(links)
+  let link = svg.append("g").selectAll('.link')
+      .data(force.links())
       .enter().append('line')
-      .attr('class', 'link')
+      .attr("class", "link")
+      .attr('id', function(d) {
+        return `link_${d.id}`})
       .style("stroke", function(d){
         if (d.capacity === infCapacity){
           return "#000"
@@ -411,45 +435,95 @@ const draw3 = function(){
           return "#fff"
         }
       })
-      .style("stroke-width", "5");
+      // .attr("marker-end","url(#arrowhead)")
+      .style("stroke-width", "4")
 
-  //create nodes
-  let node = svg.selectAll(".node")
+      //create nodes
+      let node = svg.selectAll(".node")
       .data(force.nodes())
       .enter().append("g")
       .attr('class', 'node')
       // .attr("transform",transform);
       .call(force.drag);
 
-  //add circle to visualize nodes
-  node.append("circle")
-    .attr('r', 10)
-    .attr("fill", function(d) {
-      if (d.label === "s"){
-        return "#ce9308"
-      }else if (d.label === "t"){
-        return "#969696"
-      }else if (d.profit !== null && d.profit > 0){
-        return "#31703d"
-      }else if (d.profit !== null && d.profit <= 0){
-         return "#961919"
-      }
-    })
-    .style("stroke", "#fff")
-    .style("stroke-weight", "3")
+      //add circle to visualize nodes
+      node.append("circle")
+      .attr('r', 12)
+      .attr("fill", function(d) {
+        if (d.label === "s"){
+          return "#ce9308"
+        }else if (d.label === "t"){
+          return "#969696"
+        }else if (d.profit !== null && d.profit > 0){
+          return "#31703d"
+        }else if (d.profit !== null && d.profit <= 0){
+          return "#961919"
+        }
+      })
+      .style("stroke", "#fff")
+      .style("stroke-weight", "3")
 
-  //add node labels
-  node.append("text")
-  .attr("dx", "-.2em")
-  .attr("dy", ".35em")
-  .style("fill", "white")
-  .text(function(d) {return d.label})
+      //add node labels
+      node.append("text")
+      .attr("dx", "-.2em")
+      .attr("dy", ".35em")
+      .style("fill", "white")
+      .text(function(d) {return d.label})
 
-  link.append("linkText")
-  .attr("dx", "-.2em")
-  .attr("dy", ".35em")
-  .text(function(d) {return d.capacity})
+  let edgepaths = svg.selectAll(".edgepath")
+      .data(links)
+      .enter()
+      .append('path')
+      .attr({'d': function(d) {
+        // debugger
+        return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+             'class':'edgepath',
+             'fill-opacity':0,
+             'stroke-opacity':0,
+             'fill':'blue',
+             'stroke':'red',
+             'id':function(d,i) {return 'edgepath'+i}})
+      .style("pointer-events", "none");
 
+      var edgelabels = svg.selectAll(".edgelabel")
+          .data(links)
+          .enter()
+          .append('text')
+          .style("pointer-events", "none")
+          .attr({'class':'edgelabel',
+                 'id':function(d,i){return 'edgelabel'+i},
+                 'dx':80,
+                 'dy':-5,
+                 'font-size':20,
+                 'fill':'#aaa'});
+
+
+       edgelabels.append('textPath')
+           .attr('xlink:href',function(d,i) {return '#edgepath'+i})
+           .style("pointer-events", "none")
+           .text(function(d){
+             // debugger
+             return `${d.res}:${d.capacity}`});
+    //
+    // let link = svg.selectAll(".link")
+    //   .data(force.links())
+    //   .enter().append("g")
+    //   .attr("class","link")
+    //
+    //
+    // link.append("line")
+    // .attr('id', function(d) {
+    //   return `link_${d.id}`})
+    // .style("stroke", function(d){
+    //   if (d.capacity === infCapacity){
+    //     return "#000"
+    //   }else if (d.target.label === "t"){
+    //     return "#632f12"
+    //   }else if ( d.source.label === "s"){
+    //     return "#fff"
+    //   }
+    // })
+    // .style("stroke-width", "5");
 
   function tick(e) {
       node.attr('cx', function(d) {
@@ -462,6 +536,36 @@ const draw3 = function(){
           .attr('y1', function(d) { return d.source.y; })
           .attr('x2', function(d) { return d.target.x; })
           .attr('y2', function(d) { return d.target.y; });
+
+
+      edgepaths.attr('d', function(d) {
+        let path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
+        return path
+      });
+
+      // edgelabels.attr('transform',function(d,i){
+      //     if (d.target.x<d.source.x){
+      //         bbox = this.getBBox();
+      //         rx = bbox.x+bbox.width/2;
+      //         ry = bbox.y+bbox.height/2;
+      //         return 'rotate(180 '+rx+' '+ry+')';
+      //         }
+      //     else {
+      //         return 'rotate(0)';
+      //         }
+      // });
+
+      edgelabels.attr("transform", function(d,i){
+        if (d.target.x < d.source.x){
+          bbox = this.getBBox();
+          rx = bbox.x + bbox.width/2;
+          ry = bbox.y + bbox.height/2;
+          return `rotate(180 ${rx} ${ry})`;
+        }
+        else{
+          return "rotate(0)";
+        }
+      })
   }
 
   const BFS = (graph, s, t, parent) => {
@@ -560,15 +664,23 @@ const draw3 = function(){
   }
 
 
-  let result = EK(matrix,0,9);
-  highlightSolution(result.solution, count);
+  // setTimeout(function(){
+    // svg.selectAll(".node").filter(function(d){
+    //   debugger
+    //   return;
+    // })
+  //   , 1000);
+  // })
+
+  // let result = EK(matrix,0,9);
+  // highlightSolution(result.solution, count);
   // debugger
 
 
   function highlightSolution(solution, count){
     setTimeout(function(){
       svg.selectAll("circle").filter(function(d) {
-        debugger
+        // debugger
         return solution.includes(d.index);
       })
       .transition()
@@ -576,7 +688,7 @@ const draw3 = function(){
       .attr("fill", "white")
 
       svg.selectAll("text").filter(function(d) {
-        debugger
+        // debugger
         return solution.includes(d.index);
       })
       .transition()
@@ -636,7 +748,6 @@ const draw3 = function(){
   }
 
 }
-
 
 module.exports = draw3;
 
