@@ -311,14 +311,14 @@ const draw3 = function(){
 
   let nodes = [
     {label: "s", index: 0, profit: null, row: null, fixed: true, x: width/2, y: height-100},
-    {label: "1", index: 1, profit: matrix[0][1], row: 1, fixed: true, x: width/2-150, y: height - 325},
-    {label: "2", index: 2, profit: matrix[0][2], row: 1},
-    {label: "3", index: 3, profit: matrix[0][3], row: 1, fixed: true, x: width/2+150, y: height - 325},
-    {label: "4", index: 4, profit: matrix[4][9]*-1, row: 0, fixed: true, x: width/2 - 200, y: 325},
-    {label: "5", index: 5, profit: matrix[5][9]*-1, row: 0},
-    {label: "6", index: 6, profit: matrix[6][9]*-1, row: 0},
-    {label: "7", index: 7, profit: matrix[7][9]*-1, row: 0},
-    {label: "8", index: 8, profit: matrix[8][9]*-1, row: 0, fixed: true, x: width/2 + 200, y: 325},
+    {label: "a", index: 1, profit: matrix[0][1], row: 1, fixed: true, x: width/2-150, y: height - 325},
+    {label: "b", index: 2, profit: matrix[0][2], row: 1},
+    {label: "c", index: 3, profit: matrix[0][3], row: 1, fixed: true, x: width/2+150, y: height - 325},
+    {label: "d", index: 4, profit: matrix[4][9]*-1, row: 0, fixed: true, x: width/2 - 200, y: 325},
+    {label: "e", index: 5, profit: matrix[5][9]*-1, row: 0},
+    {label: "f", index: 6, profit: matrix[6][9]*-1, row: 0},
+    {label: "g", index: 7, profit: matrix[7][9]*-1, row: 0},
+    {label: "h", index: 8, profit: matrix[8][9]*-1, row: 0, fixed: true, x: width/2 + 200, y: 325},
     {label: "t", index: 9, profit: null, row: null, fixed: true, x: width/2, y: 100}
   ]
 
@@ -450,12 +450,6 @@ const draw3 = function(){
   .attr("dy", ".35em")
   .text(function(d) {return d.capacity})
 
-  svg.selectAll("circle").filter(function(d) {
-    // debugger
-    return;
-  })
-  .attr("fill", "white")
-  // .select("text").text("X")
 
   function tick(e) {
       node.attr('cx', function(d) {
@@ -469,59 +463,6 @@ const draw3 = function(){
           .attr('x2', function(d) { return d.target.x; })
           .attr('y2', function(d) { return d.target.y; });
   }
-
-
-  // setTimeout(function(){
-  //   svg.selectAll("text")
-  //   .filter(function(d){
-  //     return d.label === "s"
-  //   })
-  //   .text("5");
-
-  // setTimeout(function(){
-  //   svg.selectAll(".link")
-  //   .filter(function(d){
-  //     debugger
-  //     return d.target.label === "1"
-  //   })
-  //   .transition()
-  //   .duration(animationInterval)
-  //   .style("stroke", "red")
-  // }, animationInterval);
-  //
-  // setTimeout(function(){
-  //   svg.selectAll(".link")
-  //   .filter(function(d){
-  //     debugger
-  //     return d.source.label === "1" && d.target.label==="4"
-  //   })
-  //   .transition()
-  //   .duration(animationInterval)
-  //   .style("stroke", "red")
-  // }, 2000);
-  //
-  // setTimeout(function(){
-  //   svg.selectAll(".link")
-  //   .filter(function(d){
-  //     debugger
-  //     return d.source.label === "4" && d.target.label==="t"
-  //   })
-  //   .transition()
-  //   .duration(animationInterval)
-  //   .style("stroke", "red")
-  // }, 3000);
-
-
-
-
-
-
-
-
-
-
-
-
 
   const BFS = (graph, s, t, parent) => {
     let visited = [];
@@ -554,12 +495,12 @@ const draw3 = function(){
     parent.push(-1);
   }
 
+  let count = 30;
   const EK = (graph, source, sink) => {
 
 
     let max_flow = 0;
     // debugger
-    let count = 1;
     while (BFS(graph, source, sink, parent).pathToSink) {
       let path_flow = 91;
       let s = sink;
@@ -595,6 +536,8 @@ const draw3 = function(){
 
     let solution = [];
     let queue = []
+
+    //finds solution nodes
     graph[0].forEach((el,i) => {
       if (el > 0){
         solution.push(i);
@@ -610,13 +553,38 @@ const draw3 = function(){
         }
       })
     }
+    count = count + 1;
+
+
     return {max_flow, solution};
   }
 
 
   let result = EK(matrix,0,9);
-  debugger
-debugger
+  highlightSolution(result.solution, count);
+  // debugger
+
+
+  function highlightSolution(solution, count){
+    setTimeout(function(){
+      svg.selectAll("circle").filter(function(d) {
+        debugger
+        return solution.includes(d.index);
+      })
+      .transition()
+      .duration(1000)
+      .attr("fill", "white")
+
+      svg.selectAll("text").filter(function(d) {
+        debugger
+        return solution.includes(d.index);
+      })
+      .transition()
+      .duration(1000)
+      .style("fill", "black")
+    },animationInterval*count)
+  }
+
   function animatePath(path, count, type) {
     for (let i = 0; i < path.length - 1; i++){
       setTimeout(function(){
