@@ -294,8 +294,10 @@ const draw3 = function(){
   let width = 900,
       height = 900;
 
+  let animationInterval = 100;
+
   let matrix = [
-    [0,4,4,4,0,0,0,0,0,0],
+    [0,4,1,1,0,0,0,0,0,0],
     [0,0,0,0,25,25,25,0,0,0],
     [0,0,0,0,0,25,25,25,0,0],
     [0,0,0,0,0,0,25,25,25,0],
@@ -305,19 +307,18 @@ const draw3 = function(){
     [0,0,0,0,0,0,0,0,0,1],
     [0,0,0,0,0,0,0,0,0,1],
     [0,0,0,0,0,0,0,0,0,0]
-
   ]
 
   let nodes = [
     {label: "s", index: 0, profit: null, row: null, fixed: true, x: width/2, y: height-100},
-    {label: "1", index: 1, profit:4, row: 1, fixed: true, x: width/2-150, y: height - 325},
-    {label: "2", index: 2, profit: 4, row: 1},
-    {label: "3", index: 3, profit: 4, row: 1, fixed: true, x: width/2+150, y: height - 325},
-    {label: "4", index: 4, profit: -1, row: 0, fixed: true, x: width/2 - 200, y: 325},
-    {label: "5", index: 5, profit: -1, row: 0},
-    {label: "6", index: 6, profit: -1, row: 0},
-    {label: "7", index: 7, profit: -1, row: 0},
-    {label: "8", index: 8, profit: -1, row: 0, fixed: true, x: width/2 + 200, y: 325},
+    {label: "1", index: 1, profit: matrix[0][1], row: 1, fixed: true, x: width/2-150, y: height - 325},
+    {label: "2", index: 2, profit: matrix[0][2], row: 1},
+    {label: "3", index: 3, profit: matrix[0][3], row: 1, fixed: true, x: width/2+150, y: height - 325},
+    {label: "4", index: 4, profit: matrix[4][9]*-1, row: 0, fixed: true, x: width/2 - 200, y: 325},
+    {label: "5", index: 5, profit: matrix[5][9]*-1, row: 0},
+    {label: "6", index: 6, profit: matrix[6][9]*-1, row: 0},
+    {label: "7", index: 7, profit: matrix[7][9]*-1, row: 0},
+    {label: "8", index: 8, profit: matrix[8][9]*-1, row: 0, fixed: true, x: width/2 + 200, y: 325},
     {label: "t", index: 9, profit: null, row: null, fixed: true, x: width/2, y: 100}
   ]
 
@@ -484,9 +485,9 @@ const draw3 = function(){
   //     return d.target.label === "1"
   //   })
   //   .transition()
-  //   .duration(1000)
+  //   .duration(animationInterval)
   //   .style("stroke", "red")
-  // }, 1000);
+  // }, animationInterval);
   //
   // setTimeout(function(){
   //   svg.selectAll(".link")
@@ -495,7 +496,7 @@ const draw3 = function(){
   //     return d.source.label === "1" && d.target.label==="4"
   //   })
   //   .transition()
-  //   .duration(1000)
+  //   .duration(animationInterval)
   //   .style("stroke", "red")
   // }, 2000);
   //
@@ -506,7 +507,7 @@ const draw3 = function(){
   //     return d.source.label === "4" && d.target.label==="t"
   //   })
   //   .transition()
-  //   .duration(1000)
+  //   .duration(animationInterval)
   //   .style("stroke", "red")
   // }, 3000);
 
@@ -568,48 +569,75 @@ const draw3 = function(){
         s = parent[s];
         path.unshift(s);
       }
-      animateBFS(path, count);
+      // debugger
+      animatePath(path, count, "search");
       max_flow = max_flow + path_flow;
       // debugger
       count = count + (path.length - 1);
 
       let t = sink;
-
+      let augmentingPath = [t];
       while (t != source){
         let u = parent[t];
         graph[u][t] =  graph[u][t] - path_flow;
         graph[t][u] = graph[t][u] + path_flow;
         t = parent[t];
+        augmentingPath.push(t)
       }
+      animatePath(augmentingPath, count, "augment")
+
+      count = count + (path.length - 1);
+      // debugger
 
       resetBFSLinks(path, count);
       count = count + 1;
     }
 
     let solution = [];
-    graph.forEach((arr,i) => {
-      if (arr[0] > 0){
-          solution.push(i)
+    let queue = []
+    graph[0].forEach((el,i) => {
+      if (el > 0){
+        solution.push(i);
+        queue.push(i);
       }
-  })
+    })
+    while (queue.length > 0){
+      let nextNode = queue.shift();
+      graph[nextNode].forEach((el,i) => {
+        if (el > 0 && !solution.includes(i)){
+          solution.push(i);
+          queue.push(i);
+        }
+      })
+    }
     return {max_flow, solution};
   }
 
 
-  EK(matrix,0,9);
-  // debugger
-
-  function animateBFS(path, count) {
+  let result = EK(matrix,0,9);
+  debugger
+debugger
+  function animatePath(path, count, type) {
     for (let i = 0; i < path.length - 1; i++){
       setTimeout(function(){
         svg.selectAll(".link")
         .filter(function(d){
-          return d.source.index === path[i] && d.target.index === path[i+1]
+          if (type === "search"){
+            return d.source.index === path[i] && d.target.index === path[i+1]
+          }else{
+            return d.source.index === path[i+1] && d.target.index === path[i]
+          }
         })
         .transition()
-        .duration(1000)
-        .style("stroke", "red")
-      }, 1000*count)
+        .duration(animationInterval)
+        .style("stroke", function(){
+          if (type === "search"){
+            return "red"
+          }else if (type === "augment"){
+            return "#039ab5"
+          }
+        })
+      }, animationInterval*count)
       count = count + 1
       // debugger
     }
@@ -625,7 +653,7 @@ const draw3 = function(){
           return d.source.index === path[i] && d.target.index === path[i+1]
         })
         .transition()
-        .duration(1000)
+        .duration(animationInterval)
         .style("stroke", function(d){
           if (d.capacity === infCapacity){
             return "#000"
@@ -635,9 +663,10 @@ const draw3 = function(){
             return "#fff"
           }
         })
-      }, 1000*count)
+      }, animationInterval*count)
     }
   }
+
 }
 
 
