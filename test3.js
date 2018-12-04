@@ -407,8 +407,10 @@ const draw3 = function(){
   //
 
 
-  let result = EK(matrix,0,9);
-  highlightSolution(result.solution, result.count, result.solutionEdges);
+  let result;
+
+  // EK(matrix,0,9);
+  // highlightSolution(result.solution, result.count, result.solutionEdges);
   debugger
 
   function updateCapacities(source,target,count,graph){
@@ -448,31 +450,46 @@ const draw3 = function(){
 
   function highlightSolution(solution, count, solutionEdges){
     setTimeout(function(){
-      svg.selectAll("circle").filter(function(d) {
-        // debugger
-        return solution.includes(d.index);
-      })
+      svg.selectAll("circle")
+      // .filter(function(d) {
+      //   // debugger
+      //   return solution.includes(d.index);
+      // })
       .transition()
       .duration(1000)
-      .attr("fill", "white")
+      .attr("fill", function(d){
+        if (solution.includes(d.index)){
+          return "white"
+        }else{
+          return "black"
+        }
+      })
 
-      svg.selectAll("text").filter(function(d) {
-        // debugger
-        return solution.includes(d.index);
-      })
+      svg.selectAll("text")
+      // .filter(function(d) {
+      //   // debugger
+      //   return solution.includes(d.index);
+      // })
       .transition()
       .duration(1000)
-      .style("fill", "black");
+      .style("fill", function(d){
+        // return "black"
+        if (solution.includes(d.index)){
+          return "black"
+        }else{
+          return "gray"
+        }
+      });
 
-      svg.selectAll(".link").filter(function(d) {
-        let tmp = [d.source.index,d.target.index];
-        // debugger
-        pathMatch(tmp,solutionEdges)
-        return pathMatch(tmp,solutionEdges);
-      })
-      .transition()
-      .duration(1000)
-      .style("stroke", "red")
+      // svg.selectAll(".link").filter(function(d) {
+      //   let tmp = [d.source.index,d.target.index];
+      //   // debugger
+      //   pathMatch(tmp,solutionEdges)
+      //   return pathMatch(tmp,solutionEdges);
+      // })
+      // .transition()
+      // .duration(1000)
+      // .style("stroke", "red")
     },animationInterval*count)
   }
 
