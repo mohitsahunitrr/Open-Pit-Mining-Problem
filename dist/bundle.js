@@ -342,7 +342,7 @@ const draw3 = function(){
   ]
 
   //effectively the sum of all other capacities + 1 (commonly C + 1)
-  infCapacity = 0;
+  infCapacity = 25;
 
   //computes C + 1
   const simulateInfCapacity = () => {
@@ -380,7 +380,7 @@ const draw3 = function(){
       linkIdIdx = linkIdIdx + 1;
     })
   }
-  simulateInfCapacity();
+  // simulateInfCapacity();
   setInfiniteLinks();
   setFiniteLinks();
   // debugger
@@ -465,6 +465,7 @@ const draw3 = function(){
 
       //add node labels
       node.append("text")
+      .attr("class","nodeLabel")
       .attr("dx", "-.2em")
       .attr("dy", ".35em")
       .style("fill", "white")
@@ -482,7 +483,7 @@ const draw3 = function(){
              'stroke-opacity':0,
              'fill':'blue',
              'stroke':'red',
-             'id':function(d,i) {return 'edgepath'+i}})
+             'id':function(d,i) {return `edgepath:${d.source.index}-${d.target.index}`}})
       .style("pointer-events", "none");
 
       var edgelabels = svg.selectAll(".edgelabel")
@@ -499,11 +500,21 @@ const draw3 = function(){
 
 
        edgelabels.append('textPath')
-           .attr('xlink:href',function(d,i) {return '#edgepath'+i})
+           .attr('xlink:href',function(d,i) {
+             // debugger
+              return `#edgepath:${d.source.index}-${d.target.index}`})
+             // return '#edgepath'+i})
            .style("pointer-events", "none")
            .text(function(d){
-             // debugger
-             return `${d.res}:${d.capacity}`});
+             // debugger`${d.capacity}`
+             let cap;
+             if (d.capacity === infCapacity){
+               cap = `∞`
+             }
+             else{
+               cap = `${d.capacity}`
+             }
+             return `${d.res}:${cap}`});
     //
     // let link = svg.selectAll(".link")
     //   .data(force.links())
@@ -599,8 +610,8 @@ const draw3 = function(){
     parent.push(-1);
   }
 
-  let count = 30;
   const EK = (graph, source, sink) => {
+    let count = 3;
 
 
     let max_flow = 0;
@@ -626,58 +637,108 @@ const draw3 = function(){
         let u = parent[t];
         graph[u][t] =  graph[u][t] - path_flow;
         graph[t][u] = graph[t][u] + path_flow;
+        let z = graph[u][t];
+        animateAugment(u,t,count,graph);
+        count = count + 1;
+        // debugger
+        // updateCapacities(u,t,count);
         t = parent[t];
         augmentingPath.push(t)
       }
-      animatePath(augmentingPath, count, "augment")
+      // animatePath(augmentingPath, count, "augment",graph)
 
-      count = count + (path.length - 1);
+      // count = count + (path.length - 1);
       // debugger
 
       resetBFSLinks(path, count);
       count = count + 1;
     }
 
-    let solution = [];
-    let queue = []
+    let solution = [0];
+    let queue = [0]
+    let solutionEdges = [];
 
     //finds solution nodes
     graph[0].forEach((el,i) => {
       if (el > 0){
         solution.push(i);
         queue.push(i);
+        solutionEdges.push([0,i]);
       }
     })
+    // debugger
     while (queue.length > 0){
       let nextNode = queue.shift();
       graph[nextNode].forEach((el,i) => {
         if (el > 0 && !solution.includes(i)){
           solution.push(i);
           queue.push(i);
+          solutionEdges.push([nextNode,i]);
         }
       })
     }
     count = count + 1;
 
-
-    return {max_flow, solution};
+    debugger
+    return {max_flow, solution,count,solutionEdges};
   }
 
+  // let node.enter().append("text")
 
+
+
+  ///USEFUL STUFF RIGHT HERE
   // setTimeout(function(){
-    // svg.selectAll(".node").filter(function(d){
-    //   debugger
-    //   return;
-    // })
-  //   , 1000);
-  // })
-
-  // let result = EK(matrix,0,9);
-  // highlightSolution(result.solution, count);
-  // debugger
+  //   svg.selectAll("textPath")
+  //   .filter(function(d){
+  //     // debugger
+  //     return d.source.index === 0 && d.target.index === 1;
+  //   })
+  //   .text("4")
+  // },1000);
+  //
 
 
-  function highlightSolution(solution, count){
+  let result = EK(matrix,0,9);
+  highlightSolution(result.solution, result.count, result.solutionEdges);
+  debugger
+
+  function updateCapacities(source,target,count,graph){
+    // debugger
+    setTimeout(function(){
+      // debugger
+      svg.selectAll("textPath")
+      .filter(function(d){
+        // debugger
+        return d.source.index === source && d.target.index === target;
+      })
+      .text(function(d){
+        // debugger
+        let cap;
+        if (d.capacity === infCapacity){
+          cap = `∞`
+        }
+        else{
+          cap = `${d.capacity}`
+        }
+        // debugger
+        return `${d.capacity - graph[source][target]}:${cap}`
+      }
+    )
+    },animationInterval/2);
+  }
+
+  function pathMatch(tmpArr, solutionArr){
+    let result = false;
+    solutionArr.forEach(arr => {
+      if (tmpArr[0] === arr[0] && tmpArr[1] === arr[1]){
+        result = true;
+      }
+    })
+    return result;
+  }
+
+  function highlightSolution(solution, count, solutionEdges){
     setTimeout(function(){
       svg.selectAll("circle").filter(function(d) {
         // debugger
@@ -693,11 +754,43 @@ const draw3 = function(){
       })
       .transition()
       .duration(1000)
-      .style("fill", "black")
+      .style("fill", "black");
+
+      svg.selectAll(".link").filter(function(d) {
+        let tmp = [d.source.index,d.target.index];
+        // debugger
+        pathMatch(tmp,solutionEdges)
+        return pathMatch(tmp,solutionEdges);
+      })
+      .transition()
+      .duration(1000)
+      .style("stroke", "red")
     },animationInterval*count)
   }
 
-  function animatePath(path, count, type) {
+  function animateAugment(source,target,count,graph){
+    // updateCapacities(source,target,count,graph);
+    setTimeout(function(){
+      svg.selectAll(".link")
+      .filter(function(d){
+
+        // debugger
+        if (d.source.index === source && d.target.index === target){
+          // debugger
+          updateCapacities(d.source.index, d.target.index,count,graph);
+          return true;
+        // return d.source.index === path[i+1] && d.target.index === path[i]
+        }
+      })
+      .transition()
+      .duration(animationInterval)
+      .style("stroke", function(){
+          return "#039ab5"
+      })
+    }, animationInterval*count)
+  }
+
+  function animatePath(path, count, type,graph) {
     for (let i = 0; i < path.length - 1; i++){
       setTimeout(function(){
         svg.selectAll(".link")
@@ -705,7 +798,12 @@ const draw3 = function(){
           if (type === "search"){
             return d.source.index === path[i] && d.target.index === path[i+1]
           }else{
-            return d.source.index === path[i+1] && d.target.index === path[i]
+            if (d.source.index === path[i+1] && d.target.index === path[i]){
+              // debugger
+              updateCapacities(d.source.index, d.target.index,count,graph);
+              return true;
+            }
+            // return d.source.index === path[i+1] && d.target.index === path[i]
           }
         })
         .transition()
