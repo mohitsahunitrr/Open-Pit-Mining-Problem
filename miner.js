@@ -181,6 +181,11 @@
 
 
 const draw = require("./test3.js");
+import Mine from "./mineTest.js";
 document.addEventListener("DOMContentLoaded", () => {
-  draw();
+
+  let mine = new Mine();
+  // mine.drawMine();
+  // draw();
+  // draw2();
 });
