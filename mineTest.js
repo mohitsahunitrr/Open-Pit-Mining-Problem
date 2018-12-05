@@ -5,21 +5,21 @@ class Mine {
     this.mine = [
       [
         {profit: -1, idx: 3},
-        {profit: -1, idx: 4},
-        {profit: -1, idx: 5},
+        {profit: 1, idx: 4},
+        {profit: 1, idx: 5},
         {profit: -1, idx: 6},
-        {profit: -1, idx: 7}
+        {profit: 1, idx: 7}
       ],
       [
         {profit: null, idx: null},
-        {profit: 1, idx: 0},
-        {profit: 1, idx: 1},
-        {profit: 1, idx: 2},
+        {profit: -1, idx: 0},
+        {profit: -1, idx: 1},
+        {profit: -1, idx: 2},
         {profit: null, idx: null}
       ]
     ];
     this.nodeLayers;
-    this.updateNodeLayers(this.mine.reverse());
+    this.updateNodeLayers(this.mine);
     this.numBlocks = 8;
     this.block;
     this.svg = d3.select("body").append("svg").attr("width", 700).attr("height", 400)
@@ -30,7 +30,7 @@ class Mine {
     this.addListeners();
     this.graph = new Graph();
     this.graph.generateMatrixFromMine(this);
-    this.graph.populateLinks(this.mine);
+    this.graph.populateLinks();
     this.presentGraph();
     //
     // this.graph.generateMatrixFromMine(this);
@@ -59,9 +59,10 @@ class Mine {
         last--;
       }
       result.push(rowEnds);
-      debugger
+      // debugger
     })
     this.nodeLayers = result;
+    debugger
   }
 
   drawMine(){

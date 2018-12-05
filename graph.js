@@ -16,7 +16,7 @@ class Graph {
     this.link;
     this.restrictions = [];
     this.nodeLabelList = "abcdefghijklmnopqruvwxyz"
-    this.innerNodeCount = 0;
+    this.innerNodeCount;
     this.force;
     // debugger
   }
@@ -32,12 +32,13 @@ class Graph {
   }
 
   findBlocksAbove(i,j,mine){
-    debugger
+    // debugger
     const result = [];
     if (i === 0) return result;
     if (j > 0) result.push([i-1,j-1]);
     result.push([i-1,j]);
     if (j < mine[0].length - 1) result.push([i-1,j+1]);
+    // debugger
     return result;
   }
 
@@ -49,34 +50,46 @@ class Graph {
 
   generateMatrixFromMine(mineObj){
     // debugger
-    this.mine = mineObj.mine.reverse();
-    // let
-    this.nodes.push({label: "s", index: this.innerNodeCount, profit: null, fixed: true, x: this.svgWidth/2, y: this.svgHeight-100});
-    // this.mineH = mine.length;
-    // this.mineW = mine[0].length;
+    this.mine = mineObj.mine;
     const matrixSize = mineObj.numBlocks + 2;
     this.populateMatrix(matrixSize);
-
+    this.innerNodeCount = matrixSize-1;
+    let nodeLayers = mineObj.nodeLayers;
+    // this.mineH = mine.length;
+    // this.mineW = mine[0].length;
     this.mine.forEach((row,i) => {
-      row.forEach((el, j) => {
-        // debugger
+      row.reverse().forEach((el, j) => {
+        debugger
         if (el.profit !== null){
-          this.innerNodeCount = this.innerNodeCount + 1;
+          this.innerNodeCount--;
           let newPos = this.findNodeNum(i,j,this.mine);
           if (el.profit > 0) this.matrix[0][newPos] = el.profit;
           else if (el.profit < 0) this.matrix[newPos][this.matrix.length - 1] = (-1*el.profit);
           let aboves = this.findBlocksAbove(i,j,this.mine);
           // debugger
           aboves.forEach(pos => {
-            let infRow = this.findNodeNum(i,j,this.mine);
-            let infCol = this.findNodeNum(pos[0],pos[1],this.mine);
+            el;
+            mineObj;
+            // debugger
+            let infCol = this.findNodeNum(i,j,this.mine);
+            let infRow = this.findNodeNum(pos[0],pos[1],this.mine);
             this.matrix[infRow][infCol] = this.infCapacity;
           })
           // debugger
-          this.nodes.push({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit});
+          i;
+          // nodeLayers;
+          // debugger
+          if (nodeLayers[i][0] === el.idx){
+            this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: this.svgWidth/6, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
+          }else if (nodeLayers[i][1] === el.idx){
+            this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: 5*this.svgWidth/6, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
+          }else{
+            this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit});
+          }
         }
       })
     })
+    this.nodes.unshift({label: "s", index: 0, profit: null, fixed: true, x: this.svgWidth/2, y: this.svgHeight-100});
     this.nodes.push({label: "t", index: this.innerNodeCount+1, profit: null, fixed: true, x: this.svgWidth/2, y: 100});
     debugger
 
@@ -84,14 +97,17 @@ class Graph {
 
   populateLinks(){
     let linkId = 0;
+    // debugger
     this.matrix.forEach((row,i) => {
       row.forEach((el,j) => {
         if (el > 0){
+          // debugger
           this.links.push({source: i, target: j, res: 0, capacity: el, id: linkId});
           linkId = linkId + 1;
         }
       })
     })
+    debugger
   }
 
   renderGraph(){
@@ -116,7 +132,9 @@ class Graph {
       .attr("transform", function(d) { return `translate(${d.x},${d.y})`; });
 
       // debugger
-      this.link.attr('x1', function(d) { return d.source.x; })
+      this.link.attr('x1', function(d) {
+        debugger
+        return d.source.x; })
       .attr('y1', function(d) { return d.source.y; })
       .attr('x2', function(d) { return d.target.x; })
       .attr('y2', function(d) { return d.target.y; });
@@ -142,7 +160,7 @@ class Graph {
     // .linkDistance(100)
     .gravity(0.1)
     .charge(-1200)
-    .linkDistance(300)
+    .linkDistance(100)
     .linkStrength(0.1)
     .start();
 
@@ -178,7 +196,7 @@ class Graph {
       this.node.append("circle")
       .attr('r', 12)
       .attr("fill", function(d) {
-        debugger
+        // debugger
         if (d.label === "s"){
           return "#ce9308"
         }else if (d.label === "t"){
