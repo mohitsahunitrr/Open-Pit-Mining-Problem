@@ -4,11 +4,11 @@
 const draw3 = function(){
   let width = 900,
       height = 900;
-
+      
   animationInterval = 100;
 
   let matrix = [
-    [0,4,1,1,0,0,0,0,0,0],
+    [0,1,1,1,0,0,0,0,0,0],
     [0,0,0,0,25,25,25,0,0,0],
     [0,0,0,0,0,25,25,25,0,0],
     [0,0,0,0,0,0,25,25,25,0],
@@ -70,7 +70,7 @@ const draw3 = function(){
   //creates links with finite capacities
   const setFiniteLinks = () => {
     nodes.forEach((node,i) => {
-      // debugger
+      //
       if (node.label !== "s" && node.label !== "t"){
         if (node.profit > 0){
           links.push({source: 0, target: i, res: 0, capacity: node.profit})
@@ -91,21 +91,65 @@ const draw3 = function(){
   // simulateInfCapacity();
   setInfiniteLinks();
   setFiniteLinks();
-  // debugger
+  //
 
   //create object for manipulation
   let svg = d3.select('body').append('svg')
       .attr('width', width)
       .attr('height', height);
 
-
-  // debugger
+  //
   //apply force conditions
+
   let force = d3.layout.force()
       .size([width, height])
       .nodes(d3.values(nodes))
       .links(links)
-      .on("tick", tick)
+      .on("tick", () => {
+        debugger
+        node.attr('cx', function(d) {
+          debugger
+            return d.x;
+          })
+          .attr('cy', function(d) { return d.y; })
+          .attr("transform", function(d) { return `translate(${d.x},${d.y})`; });
+
+    debugger
+    link.attr('x1', function(d) { return d.source.x; })
+        .attr('y1', function(d) { return d.source.y; })
+        .attr('x2', function(d) { return d.target.x; })
+        .attr('y2', function(d) { return d.target.y; });
+
+
+        edgepaths.attr('d', function(d) {
+          let path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
+          return path
+        });
+
+        // edgelabels.attr('transform',function(d,i){
+        //     if (d.target.x<d.source.x){
+        //         bbox = this.getBBox();
+        //         rx = bbox.x+bbox.width/2;
+        //         ry = bbox.y+bbox.height/2;
+        //         return 'rotate(180 '+rx+' '+ry+')';
+        //         }
+        //     else {
+        //         return 'rotate(0)';
+        //         }
+        // });
+
+        edgelabels.attr("transform", function(d,i){
+          if (d.target.x < d.source.x){
+            bbox = this.getBBox();
+            rx = bbox.x + bbox.width/2;
+            ry = bbox.y + bbox.height/2;
+            return `rotate(180 ${rx} ${ry})`;
+          }
+          else{
+            return "rotate(0)";
+          }
+        })
+      })
       // .linkDistance(100)
       .gravity(0.1)
       .charge(-1200)
@@ -121,7 +165,7 @@ const draw3 = function(){
       //   .attr("text-anchor","start")
       //   .style("fill","#000")
       //   .attr("xlink:href",function(d,i){
-      //     debugger
+      //
       //     return `#linkId_${i}`;})
       //   .text(function(d) {
       //     return d.id;
@@ -129,7 +173,7 @@ const draw3 = function(){
 
   //create links
   let link = svg.append("g").selectAll('.link')
-      .data(force.links())
+      .data(links)
       .enter().append('line')
       .attr("class", "link")
       .attr('id', function(d) {
@@ -148,7 +192,7 @@ const draw3 = function(){
 
       //create nodes
       let node = svg.selectAll(".node")
-      .data(force.nodes())
+      .data(nodes)
       .enter().append("g")
       .attr('class', 'node')
       // .attr("transform",transform);
@@ -184,7 +228,7 @@ const draw3 = function(){
       .enter()
       .append('path')
       .attr({'d': function(d) {
-        // debugger
+        //
         return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
              'class':'edgepath',
              'fill-opacity':0,
@@ -193,7 +237,7 @@ const draw3 = function(){
              'stroke':'red',
              'id':function(d,i) {return `edgepath:${d.source.index}-${d.target.index}`}})
       .style("pointer-events", "none");
-
+  //
       var edgelabels = svg.selectAll(".edgelabel")
           .data(links)
           .enter()
@@ -205,16 +249,16 @@ const draw3 = function(){
                  'dy':-5,
                  'font-size':20,
                  'fill':'#aaa'});
-
-
+  //
+  //
        edgelabels.append('textPath')
            .attr('xlink:href',function(d,i) {
-             // debugger
+             //
               return `#edgepath:${d.source.index}-${d.target.index}`})
              // return '#edgepath'+i})
            .style("pointer-events", "none")
            .text(function(d){
-             // debugger`${d.capacity}`
+             // `${d.capacity}`
              let cap;
              if (d.capacity === infCapacity){
                cap = `∞`
@@ -223,7 +267,7 @@ const draw3 = function(){
                cap = `${d.capacity}`
              }
              return `${d.res}:${cap}`});
-    //
+
     // let link = svg.selectAll(".link")
     //   .data(force.links())
     //   .enter().append("g")
@@ -244,48 +288,49 @@ const draw3 = function(){
     // })
     // .style("stroke-width", "5");
 
-  function tick(e) {
-      node.attr('cx', function(d) {
-          return d.x;
-        })
-        .attr('cy', function(d) { return d.y; })
-        .attr("transform", function(d) { return `translate(${d.x},${d.y})`; });
-
-      link.attr('x1', function(d) { return d.source.x; })
-          .attr('y1', function(d) { return d.source.y; })
-          .attr('x2', function(d) { return d.target.x; })
-          .attr('y2', function(d) { return d.target.y; });
-
-
-      edgepaths.attr('d', function(d) {
-        let path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
-        return path
-      });
-
-      // edgelabels.attr('transform',function(d,i){
-      //     if (d.target.x<d.source.x){
-      //         bbox = this.getBBox();
-      //         rx = bbox.x+bbox.width/2;
-      //         ry = bbox.y+bbox.height/2;
-      //         return 'rotate(180 '+rx+' '+ry+')';
-      //         }
-      //     else {
-      //         return 'rotate(0)';
-      //         }
-      // });
-
-      edgelabels.attr("transform", function(d,i){
-        if (d.target.x < d.source.x){
-          bbox = this.getBBox();
-          rx = bbox.x + bbox.width/2;
-          ry = bbox.y + bbox.height/2;
-          return `rotate(180 ${rx} ${ry})`;
-        }
-        else{
-          return "rotate(0)";
-        }
-      })
-  }
+  // function tick(e) {
+  //     node.attr('cx', function(d) {
+  //
+  //         return d.x;
+  //       })
+  //       .attr('cy', function(d) { return d.y; })
+  //       .attr("transform", function(d) { return `translate(${d.x},${d.y})`; });
+  //
+  //     link.attr('x1', function(d) { return d.source.x; })
+  //         .attr('y1', function(d) { return d.source.y; })
+  //         .attr('x2', function(d) { return d.target.x; })
+  //         .attr('y2', function(d) { return d.target.y; });
+  //
+  //
+  //     edgepaths.attr('d', function(d) {
+  //       let path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
+  //       return path
+  //     });
+  //
+  //     // edgelabels.attr('transform',function(d,i){
+  //     //     if (d.target.x<d.source.x){
+  //     //         bbox = this.getBBox();
+  //     //         rx = bbox.x+bbox.width/2;
+  //     //         ry = bbox.y+bbox.height/2;
+  //     //         return 'rotate(180 '+rx+' '+ry+')';
+  //     //         }
+  //     //     else {
+  //     //         return 'rotate(0)';
+  //     //         }
+  //     // });
+  //
+  //     edgelabels.attr("transform", function(d,i){
+  //       if (d.target.x < d.source.x){
+  //         bbox = this.getBBox();
+  //         rx = bbox.x + bbox.width/2;
+  //         ry = bbox.y + bbox.height/2;
+  //         return `rotate(180 ${rx} ${ry})`;
+  //       }
+  //       else{
+  //         return "rotate(0)";
+  //       }
+  //     })
+  // }
 
   const BFS = (graph, s, t, parent) => {
     let visited = [];
@@ -297,7 +342,7 @@ const draw3 = function(){
 
     queue.push(s);
     visited[s] = true;
-    // debugger
+    //
     while (queue.length > 0) {
       let currentVtx = queue.shift();
 
@@ -323,7 +368,7 @@ const draw3 = function(){
 
 
     let max_flow = 0;
-    // debugger
+    //
     while (BFS(graph, source, sink, parent).pathToSink) {
       let path_flow = 91;
       let s = sink;
@@ -333,10 +378,10 @@ const draw3 = function(){
         s = parent[s];
         path.unshift(s);
       }
-      // debugger
+      //
       animatePath(path, count, "search");
       max_flow = max_flow + path_flow;
-      // debugger
+      //
       count = count + (path.length - 1);
 
       let t = sink;
@@ -348,7 +393,7 @@ const draw3 = function(){
         let z = graph[u][t];
         animateAugment(u,t,count,graph);
         count = count + 1;
-        // debugger
+        //
         // updateCapacities(u,t,count);
         t = parent[t];
         augmentingPath.push(t)
@@ -356,7 +401,7 @@ const draw3 = function(){
       // animatePath(augmentingPath, count, "augment",graph)
 
       // count = count + (path.length - 1);
-      // debugger
+      //
 
       resetBFSLinks(path, count);
       count = count + 1;
@@ -374,7 +419,7 @@ const draw3 = function(){
         solutionEdges.push([0,i]);
       }
     })
-    // debugger
+    //
     while (queue.length > 0){
       let nextNode = queue.shift();
       graph[nextNode].forEach((el,i) => {
@@ -387,7 +432,7 @@ const draw3 = function(){
     }
     count = count + 1;
 
-    debugger
+
     return {max_flow, solution,count,solutionEdges};
   }
 
@@ -399,7 +444,7 @@ const draw3 = function(){
   // setTimeout(function(){
   //   svg.selectAll("textPath")
   //   .filter(function(d){
-  //     // debugger
+  //     //
   //     return d.source.index === 0 && d.target.index === 1;
   //   })
   //   .text("4")
@@ -411,19 +456,19 @@ const draw3 = function(){
 
   // EK(matrix,0,9);
   // highlightSolution(result.solution, result.count, result.solutionEdges);
-  debugger
+
 
   function updateCapacities(source,target,count,graph){
-    // debugger
+    //
     setTimeout(function(){
-      // debugger
+      //
       svg.selectAll("textPath")
       .filter(function(d){
-        // debugger
+        //
         return d.source.index === source && d.target.index === target;
       })
       .text(function(d){
-        // debugger
+        //
         let cap;
         if (d.capacity === infCapacity){
           cap = `∞`
@@ -431,7 +476,7 @@ const draw3 = function(){
         else{
           cap = `${d.capacity}`
         }
-        // debugger
+        //
         return `${d.capacity - graph[source][target]}:${cap}`
       }
     )
@@ -452,7 +497,7 @@ const draw3 = function(){
     setTimeout(function(){
       svg.selectAll("circle")
       // .filter(function(d) {
-      //   // debugger
+      //   //
       //   return solution.includes(d.index);
       // })
       .transition()
@@ -467,7 +512,7 @@ const draw3 = function(){
 
       svg.selectAll("text")
       // .filter(function(d) {
-      //   // debugger
+      //   //
       //   return solution.includes(d.index);
       // })
       .transition()
@@ -483,7 +528,7 @@ const draw3 = function(){
 
       // svg.selectAll(".link").filter(function(d) {
       //   let tmp = [d.source.index,d.target.index];
-      //   // debugger
+      //   //
       //   pathMatch(tmp,solutionEdges)
       //   return pathMatch(tmp,solutionEdges);
       // })
@@ -499,9 +544,9 @@ const draw3 = function(){
       svg.selectAll(".link")
       .filter(function(d){
 
-        // debugger
+        //
         if (d.source.index === source && d.target.index === target){
-          // debugger
+          //
           updateCapacities(d.source.index, d.target.index,count,graph);
           return true;
         // return d.source.index === path[i+1] && d.target.index === path[i]
@@ -524,7 +569,7 @@ const draw3 = function(){
             return d.source.index === path[i] && d.target.index === path[i+1]
           }else{
             if (d.source.index === path[i+1] && d.target.index === path[i]){
-              // debugger
+              //
               updateCapacities(d.source.index, d.target.index,count,graph);
               return true;
             }
@@ -542,7 +587,7 @@ const draw3 = function(){
         })
       }, animationInterval*count)
       count = count + 1
-      // debugger
+      //
     }
 
   }
@@ -552,7 +597,7 @@ const draw3 = function(){
       setTimeout(function(){
         svg.selectAll(".link")
         .filter(function(d){
-          // debugger
+          //
           return d.source.index === path[i] && d.target.index === path[i+1]
         })
         .transition()
