@@ -1004,7 +1004,7 @@ class Mine {
     this.svg = d3.select("body").append("svg").attr("width", 700).attr("height", 900)
     this.blocks = [];
     this.blockSelectors = [{id: 0, color: "#FFD700", profit: 1}, {id: 1, color: "#8B4513", profit: -1}];
-    this.currentBlockType;
+    this.currentBlockType =  {id: 1, color: "#8B4513", profit: -1};
     this.drawMine();
     this.addListeners();
     this.graph = new _graph_js__WEBPACK_IMPORTED_MODULE_0__["default"]();
