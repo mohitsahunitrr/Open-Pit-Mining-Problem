@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // graph2.renderGraph();
   // draw();
   let mine = new Mine();
-  mine.drawMine();
-  let graph = new Graph();
+  // mine.drawMine();
+  // let graph = new Graph();
   // draw2();
 });

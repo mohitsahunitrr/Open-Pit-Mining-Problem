@@ -5,20 +5,26 @@ class Graph {
     this.mineH;
     this.mineW;
     this.infCapacity = 1000000;
-    this.svgWidth = 700;
+    this.svgWidth = 900;
     this.svgHeight = 900;
-    this.svgGraph = d3.select("body").append("svg").attr("width", this.svgWidth).attr("height", this.svgHeight);
+    this.svgGraph = d3.select("body").append("svg").attr("class","svgGraph").attr("width", this.svgWidth).attr("height", this.svgHeight);
     this.nodes = [];
     this.links = [];
     this.node;
     this.edgepaths;
     this.edgelabels;
     this.link;
-    this.restrictions = [];
     this.nodeLabelList = "abcdefghijklmnopqruvwxyz"
     this.innerNodeCount;
     this.force;
     // debugger
+  }
+
+  clearGraph(){
+    d3.select(".svgGraph").selectAll("*").remove();
+    this.nodes = [];
+    this.links = [];
+    this.matrix = [];
   }
 
   populateMatrix(size){
@@ -49,19 +55,20 @@ class Graph {
   }
 
   generateMatrixFromMine(mineObj){
-    // debugger
     this.mine = mineObj.mine;
+    debugger
     const matrixSize = mineObj.numBlocks + 2;
     this.populateMatrix(matrixSize);
-    this.innerNodeCount = matrixSize-1;
+    // this.innerNodeCount = 0;
     let nodeLayers = mineObj.nodeLayers;
     // this.mineH = mine.length;
     // this.mineW = mine[0].length;
     this.mine.forEach((row,i) => {
-      row.reverse().forEach((el, j) => {
-        debugger
+      let tmpRow = row.slice();
+      tmpRow.forEach((el, j) => {
+        // debugger
         if (el.profit !== null){
-          this.innerNodeCount--;
+          // this.innerNodeCount++;
           let newPos = this.findNodeNum(i,j,this.mine);
           if (el.profit > 0) this.matrix[0][newPos] = el.profit;
           else if (el.profit < 0) this.matrix[newPos][this.matrix.length - 1] = (-1*el.profit);
@@ -71,28 +78,52 @@ class Graph {
             el;
             mineObj;
             // debugger
-            let infCol = this.findNodeNum(i,j,this.mine);
-            let infRow = this.findNodeNum(pos[0],pos[1],this.mine);
-            this.matrix[infRow][infCol] = this.infCapacity;
+            let intRow = this.findNodeNum(i,j,this.mine);
+            let intCol = this.findNodeNum(pos[0],pos[1],this.mine);
+            this.matrix[intRow][intCol] = this.infCapacity;
           })
           // debugger
           i;
           // nodeLayers;
           // debugger
+          // if (nodeLayers[i][0] === el.idx){
+          //   this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: this.svgWidth/10, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
+          // }else if (nodeLayers[i][1] === el.idx){
+          //   this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: 9*this.svgWidth/10, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
+          // }else{
+          //   this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit});
+          // }
+        }
+      })
+    })
+    // this.nodes.unshift({label: "s", index: 0, profit: null, fixed: true, x: this.svgWidth/2, y: this.svgHeight-50});
+    // this.nodes.push({label: "t", index: matrixSize-1, profit: null, fixed: true, x: this.svgWidth/2, y: 50});
+    // debugger
+    this.populateNodes(mineObj);
+  }
+
+  populateNodes(mineObj){
+    const matrixSize = mineObj.numBlocks + 2;
+    this.innerNodeCount = matrixSize-1;
+    let nodeLayers = mineObj.nodeLayers;
+    this.mine.forEach((row,i) => {
+      let tmpRow = row.slice();
+      tmpRow.reverse().forEach((el,j) => {
+        if (el.profit !== null){
+          this.innerNodeCount--;
           if (nodeLayers[i][0] === el.idx){
-            this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: this.svgWidth/6, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
+            this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: this.svgWidth/10, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
           }else if (nodeLayers[i][1] === el.idx){
-            this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: 5*this.svgWidth/6, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
+            this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: 9*this.svgWidth/10, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
           }else{
             this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit});
           }
         }
       })
     })
-    this.nodes.unshift({label: "s", index: 0, profit: null, fixed: true, x: this.svgWidth/2, y: this.svgHeight-100});
-    this.nodes.push({label: "t", index: this.innerNodeCount+1, profit: null, fixed: true, x: this.svgWidth/2, y: 100});
-    debugger
-
+    this.nodes.unshift({label: "s", index: 0, profit: null, fixed: true, x: this.svgWidth/2, y: this.svgHeight-50});
+    this.nodes.push({label: "t", index: matrixSize-1, profit: null, fixed: true, x: this.svgWidth/2, y: 50});
+    debugger;
   }
 
   populateLinks(){
@@ -111,13 +142,13 @@ class Graph {
   }
 
   renderGraph(){
-    this.svgGraph = d3.select('body').append('svg')
-    .attr('width', this.svgWidth)
-    .attr('height', this.svgHeight);
+    // this.svgGraph = d3.select('body').append('svg')
+    // .attr('width', this.svgWidth)
+    // .attr('height', this.svgHeight);
 
     //
     //apply force conditions
-
+    debugger
     this.force = d3.layout.force()
     .size([this.svgWidth, this.svgHeight])
     .nodes(d3.values(this.nodes))
@@ -133,7 +164,7 @@ class Graph {
 
       // debugger
       this.link.attr('x1', function(d) {
-        debugger
+        // debugger
         return d.source.x; })
       .attr('y1', function(d) { return d.source.y; })
       .attr('x2', function(d) { return d.target.x; })
@@ -158,9 +189,9 @@ class Graph {
       })
     })
     // .linkDistance(100)
-    .gravity(0.1)
-    .charge(-1200)
-    .linkDistance(100)
+    .gravity(0.01)
+    .charge(-1500)
+    // .linkDistance(100)
     .linkStrength(0.1)
     .start();
 
@@ -174,14 +205,14 @@ class Graph {
       return `link_${d.id}`})
       .style("stroke", function(d){
         if (d.capacity === infCapacity){
-          return "#000"
+          return "#444"
         }else if (d.target.label === "t"){
-          return "#632f12"
+          return "#8B4513"
         }else if ( d.source.label === "s"){
-          return "#fff"
+          return "#FFD700"
         }
       })
-      // .attr("marker-end","url(#arrowhead)")
+      .attr("marker-end","url(#arrowhead)")
       .style("stroke-width", "4")
 
       //create nodes
@@ -262,6 +293,22 @@ class Graph {
               cap = `${d.capacity}`
             }
             return `${d.res}:${cap}`});
+
+
+            this.svgGraph.append('defs').append('marker')
+                .attr({'id':'arrowhead',
+                       'viewBox':'-0 -5 10 10',
+                       'refX':25,
+                       'refY':0,
+                       //'markerUnits':'strokeWidth',
+                       'orient':'auto',
+                       'markerWidth':10,
+                       'markerHeight':10,
+                       'xoverflow':'visible'})
+                .append('svg:path')
+                    .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+                    .attr('fill', '#ccc')
+                    .attr('stroke','#ccc');
     // debugger
     // this.svgGraph.append("circle").attr("cx",100).attr("cy",100).attr("r",20).attr("fill","white");
     // debugger

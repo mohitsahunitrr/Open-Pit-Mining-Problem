@@ -3,26 +3,54 @@ import Graph from "./graph.js";
 class Mine {
   constructor(){
     this.mine = [
+      // [
+      //   {profit: -1, idx: 3},
+      //   {profit: -1, idx: 4},
+      //   {profit: -1, idx: 5},
+      //   {profit: -1, idx: 6},
+      //   {profit: -1, idx: 7}
+      // ],
+      // [
+      //   {profit: null, idx: null},
+      //   {profit: 1, idx: 0},
+      //   {profit: 1, idx: 1},
+      //   {profit: 1, idx: 2},
+      //   {profit: null, idx: null}
+      // ]
+      // [
+      //   {profit: -1, idx: 15},
+      //   {profit: -1, idx: 16},
+      //   {profit: -1, idx: 17},
+      //   {profit: -1, idx: 18},
+      //   {profit: -1, idx: 19}
+      // ],
       [
-        {profit: -1, idx: 3},
-        {profit: 1, idx: 4},
-        {profit: 1, idx: 5},
-        {profit: -1, idx: 6},
-        {profit: 1, idx: 7}
+        {profit: -1, idx: 8},
+        {profit: -1, idx: 9},
+        {profit: -1, idx: 10},
+        {profit: -1, idx: 11},
+        // {profit: -1, idx: 14}
       ],
       [
-        {profit: null, idx: null},
-        {profit: -1, idx: 0},
-        {profit: -1, idx: 1},
-        {profit: -1, idx: 2},
-        {profit: null, idx: null}
+        {profit: -1, idx: 4},
+        {profit: -1, idx: 5},
+        {profit: -1, idx: 6},
+        {profit: 1, idx: 7},
+        // {profit: -1, idx: 9}
+      ],
+      [
+        {profit: 1, idx: 0},
+        {profit: 1, idx: 1},
+        {profit: 1, idx: 2},
+        {profit: 1, idx: 3},
+        // {profit: 1, idx: 4}
       ]
     ];
     this.nodeLayers;
     this.updateNodeLayers(this.mine);
-    this.numBlocks = 8;
+    this.numBlocks = 12;
     this.block;
-    this.svg = d3.select("body").append("svg").attr("width", 700).attr("height", 400)
+    this.svg = d3.select("body").append("svg").attr("width", 700).attr("height", 900)
     this.blocks = [];
     this.blockSelectors = [{id: 0, color: "#FFD700", profit: 1}, {id: 1, color: "#8B4513", profit: -1}];
     this.currentBlockType;
@@ -167,6 +195,18 @@ class Mine {
             return `rect:${d.row}-${d.col}` === e.currentTarget.id;
           })
           .attr("fill",this.currentBlockType.color);
+
+
+          let indices = e.currentTarget.id.split(":")[1].split("-");
+          // debugger
+          this.mine[Number(indices[0])][Number(indices[1])].profit = this.currentBlockType.profit;
+
+
+          this.graph.clearGraph();
+          this.graph.generateMatrixFromMine(this);
+          this.graph.populateLinks();
+          this.presentGraph();
+
           // debugger
           // this.svg.selectAll(".block").attr("fill","white");
         })
