@@ -302,8 +302,8 @@ class Graph {
                        'refY':0,
                        //'markerUnits':'strokeWidth',
                        'orient':'auto',
-                       'markerWidth':10,
-                       'markerHeight':10,
+                       'markerWidth':4,
+                       'markerHeight':4,
                        'xoverflow':'visible'})
                 .append('svg:path')
                     .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
