@@ -191,9 +191,16 @@ class Mine {
 
         tmpBlock.addEventListener("click", e => {
           // debugger
-          this.svg.selectAll("rect").filter(function(d){
+          this.svg.selectAll("rect").filter((d) => {
             // debugger
-            return `rect:${d.row}-${d.col}` === e.currentTarget.id;
+            if (`rect:${d.row}-${d.col}` === e.currentTarget.id){
+              // this.mine[d.row][d.col].color = this.currentBlockType.color;
+              const updatableObj = this.blocks.filter(block => (block.col === d.col && block.row === d.row))[0];
+              updatableObj.profit = this.currentBlockType.profit;
+              updatableObj.color = this.currentBlockType.color
+              debugger
+              return true;
+            }
           })
           .attr("fill",this.currentBlockType.color);
 
@@ -201,6 +208,7 @@ class Mine {
           let indices = e.currentTarget.id.split(":")[1].split("-");
           // debugger
           this.mine[Number(indices[0])][Number(indices[1])].profit = this.currentBlockType.profit;
+          debugger
 
 
           this.graph.clearGraph();

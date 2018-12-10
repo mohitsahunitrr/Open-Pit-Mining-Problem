@@ -12,6 +12,7 @@ class Solver {
     this.setup();
     this.animationInterval = 500;
     this.mineSvg = mineSvg;
+    this.solution;
   }
 
   setup(){
@@ -39,6 +40,14 @@ class Solver {
     .attr("height", 50)
     .attr("fill", "red")
 
+    this.svgGraph.append("rect")
+    .attr("id","mine")
+    .attr("x", 190)
+    .attr("y", 10)
+    .attr("width", 50)
+    .attr("height", 50)
+    .attr("fill", "white")
+
     this.addListeners();
   }
 
@@ -62,6 +71,27 @@ class Solver {
       // this.solver.playback = false;
       this.playback = false;
     })
+
+    let mineButton = document.getElementById("mine");
+    mineButton.addEventListener("click", e => {
+      // this.solver.playback = false;
+      this.mineIt();
+    })
+  }
+
+  mineIt(){
+    this.mineSvg.selectAll("rect")
+    .transition()
+    .duration(1000)
+    .style("stroke", "black")
+    .attr("fill", d => {
+      return d.color
+    })
+
+    const solutionBlocks = this.solution.slice(1);
+    let count = 1;
+
+    // setTimeout(())
   }
 
   BFS(graph, s, t, parent){
@@ -169,7 +199,8 @@ class Solver {
             solutionEdges.push([nextNode,i]);
           }
         })
-      }
+      }this.solution = solution;
+
       this.highlightSolution(solution,0,solutionEdges);
       // debugger
     }
@@ -465,6 +496,7 @@ class Solver {
 
         this.mineSvg.selectAll("rect")
         .filter((d) => {
+          debugger
           return this.findIndexFromRowCol(d.row,d.col) === path[i+1]
         })
         .transition()
