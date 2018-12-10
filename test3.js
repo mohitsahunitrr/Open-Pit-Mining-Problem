@@ -4,11 +4,11 @@
 const draw3 = function(){
   let width = 900,
       height = 900;
-      
-  animationInterval = 100;
+
+  animationInterval = 500;
 
   let matrix = [
-    [0,1,1,1,0,0,0,0,0,0],
+    [0,5,2,2,0,0,0,0,0,0],
     [0,0,0,0,25,25,25,0,0,0],
     [0,0,0,0,0,25,25,25,0,0],
     [0,0,0,0,0,0,25,25,25,0],
@@ -50,7 +50,7 @@ const draw3 = function(){
   ]
 
   //effectively the sum of all other capacities + 1 (commonly C + 1)
-  infCapacity = 25;
+  infCapacity = 1000000;
 
   //computes C + 1
   const simulateInfCapacity = () => {
@@ -268,6 +268,30 @@ const draw3 = function(){
              }
              return `${d.res}:${cap}`});
 
+       svg.append("rect")
+       .attr("id","step")
+       .attr("x", 10)
+       .attr("y", 10)
+       .attr("width", 50)
+       .attr("height", 50)
+       .attr("fill", "white")
+
+       svg.append("rect")
+       .attr("id","play")
+       .attr("x", 70)
+       .attr("y", 10)
+       .attr("width", 50)
+       .attr("height", 50)
+       .attr("fill", "orange")
+
+       svg.append("rect")
+       .attr("id","pause")
+       .attr("x", 130)
+       .attr("y", 10)
+       .attr("width", 50)
+       .attr("height", 50)
+       .attr("fill", "red")
+
     // let link = svg.selectAll(".link")
     //   .data(force.links())
     //   .enter().append("g")
@@ -332,6 +356,7 @@ const draw3 = function(){
   //     })
   // }
 
+
   const BFS = (graph, s, t, parent) => {
     let visited = [];
     for (let i = 0; i < 5; i++){
@@ -363,12 +388,73 @@ const draw3 = function(){
     parent.push(-1);
   }
 
+  let count = 0;
+  let max_flow = 0;
+  let cont = true;
+  let playback = false;
+  let stepping = false;
+
+  const step = () => {
+    stepping = true;
+    debugger
+    count = 0;
+    graph = matrix;
+    source = 0;
+    sink = 9;
+    if (BFS(graph, source, sink, parent).pathToSink){
+      let path_flow = 91;
+      let s = sink;
+      let path = [s];
+      while (s != source){
+        path_flow = Math.min(path_flow, graph[parent[s]][s]);
+        s = parent[s];
+        path.unshift(s);
+      }
+      //
+      animatePath(path, count, "search");
+      max_flow = max_flow + path_flow;
+      //
+      count = count + (path.length - 1);
+
+      let t = sink;
+      let augmentingPath = [t];
+      while (t != source){
+        let u = parent[t];
+        graph[u][t] =  graph[u][t] - path_flow;
+        graph[t][u] = graph[t][u] + path_flow;
+        let z = graph[u][t];
+        animateAugment(u,t,count,graph);
+        count = count + 1;
+        //
+        // updateCapacities(u,t,count);
+        t = parent[t];
+        augmentingPath.push(t)
+      }
+      // animatePath(augmentingPath, count, "augment",graph)
+
+      // count = count + (path.length - 1);
+      //
+
+      resetBFSLinks(path, count);
+
+      count = count + 1;
+      setTimeout(() => {
+        stepping = false;
+        if (playback){
+          debugger
+          count = count + 1;
+            step()
+        }
+        // else{
+        //   count = 0;
+        // }
+      }, count*animationInterval);
+    }
+  }
+
+
   const EK = (graph, source, sink) => {
-    let count = 3;
 
-
-    let max_flow = 0;
-    //
     while (BFS(graph, source, sink, parent).pathToSink) {
       let path_flow = 91;
       let s = sink;
@@ -436,6 +522,29 @@ const draw3 = function(){
     return {max_flow, solution,count,solutionEdges};
   }
 
+  function addListeners(){
+    let playButton = document.getElementById("play");
+    playButton.addEventListener("click", e => {
+      if (!stepping) {
+        step();
+      }
+      playback = true;
+    })
+
+    let stepButton = document.getElementById("step");
+    stepButton.addEventListener("click", e => {
+      step();
+    })
+
+    let pauseButton = document.getElementById("pause");
+    pauseButton.addEventListener("click", e => {
+      playback = false;
+    })
+  }
+
+  addListeners();
+  // step();
+
   // let node.enter().append("text")
 
 
@@ -453,8 +562,6 @@ const draw3 = function(){
 
 
   let result;
-
-  // EK(matrix,0,9);
   // highlightSolution(result.solution, result.count, result.solutionEdges);
 
 

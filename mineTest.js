@@ -32,9 +32,9 @@ class Mine {
         // {profit: -1, idx: 14}
       ],
       [
-        {profit: -1, idx: 4},
-        {profit: -1, idx: 5},
-        {profit: -1, idx: 6},
+        {profit: 1, idx: 4},
+        {profit: 1, idx: 5},
+        {profit: 1, idx: 6},
         {profit: 1, idx: 7},
         // {profit: -1, idx: 9}
       ],
@@ -56,7 +56,7 @@ class Mine {
     this.currentBlockType =  {id: 1, color: "#8B4513", profit: -1};
     this.drawMine();
     this.addListeners();
-    this.graph = new Graph();
+    this.graph = new Graph(this.svg);
     this.graph.generateMatrixFromMine(this);
     this.graph.populateLinks();
     this.presentGraph();
@@ -161,6 +161,7 @@ class Mine {
 
   presentGraph(){
     this.graph.renderGraph();
+    // this.graph.addListeners();
   }
 
   addListeners(){
