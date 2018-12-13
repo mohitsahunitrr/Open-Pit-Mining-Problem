@@ -9,9 +9,65 @@
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
     <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="https://fonts.googleapis.com/css?family=Unlock" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <title>Miner</title>
   </head>
-  <body>
+  <body id="body">
+
     <h1>The Open Pit Mining Problem</h1>
+    <div class="visuals">
+      <div class="mine-items">
+        <div class="mine-text">
+          <h2 class="the-mine">The Problem</h2>
+          <h2>Find which combination of blocks in the mine below <br>will give you the highest profit (but don't forget the rules).</h2>
+          <h2>Click  <strong class="strong-select"> Select a Guess</strong>, then hover over the mine<br> and click some blocks to select your answer.</h2>
+          <h2>Then <strong class="strong-run"> Run </strong> the algorithm and check your guess!</h2>
+          <h2 class="rules-header">Rules:</h2>
+          <ul class="rules-list">
+            <!-- <li>
+              The mine below goes three levels deep into the ground
+            </li> -->
+            <li>
+              Each block can only be excavated once the blocks on top of it have been removed
+            </li>
+            <li>
+              Each block yields a specific profit once it is mined; some are positive and some are negative
+            </li>
+          </ul>
+        </div>
+        <div class="mine-buttons">
+          <button class="mine-button" type="button" id="select-guess">
+            <label>
+              Select a Guess
+            </label>
+          </button>
+          <button class="mine-button" type="button" id="add-row">Add Row</button>
+          <button class="mine-button" type="button" id="remove-row">Remove Row</button>
+          <button class="mine-button" type="button" id="reset-graph-and-mine">Reset Mine</button>
+        </div>
+        <div class="svgMineBody">
+        </div>
+      </div>
+      <div class="graph-items">
+        <h2 class="the-algorithm">The Data Structure & Algorithm</h2>
+        <div class="graph-buttons">
+          <button class="graph-button" type="button" id="step-animation">Step</button>
+          <button class="graph-button" type="button" id="play-animation">Run</button>
+          <button class="graph-button" type="button" id="stop-animation">Stop</button>
+          <button class="graph-button" type="button" id="mine-animation">Mine It!</button>
+        </div>
+        <div class="svgGraphBody">
+        </div>
+      </div>
+      <!-- <div class="personal-links">
+        <a href="https://github.com/nrice95">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/nathan-rice-a7922813a/">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </div> -->
+    </div>
   </body>
 </html>

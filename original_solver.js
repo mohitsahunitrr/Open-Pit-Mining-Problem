@@ -1,5 +1,5 @@
 class Solver {
-  constructor(stepping, playback, count, matrix, parent, max_flow, svgGraph, mineSvg, mine){
+  constructor(stepping, playback, count, matrix, parent, max_flow, svgGraph, mineSvg){
     // debugger
     this.stepping = stepping;
     this.playback = playback;
@@ -10,88 +10,73 @@ class Solver {
     this.svgGraph = svgGraph;
     this.infCapacity = 1000000;
     this.setup();
-    this.animationInterval = 300;
+    this.animationInterval = 100;
     this.mineSvg = mineSvg;
-    this.mine = mine;
     this.solution;
-    this.colorMap = {"#8B4513": "rust", "#FFD700": "gold", "#c8c8c8": "silver", "#bdad9c": "stone"};
   }
 
   setup(){
-    // this.svgGraph.append("rect")
-    // .attr("id","step")
-    // .attr("x", 10)
-    // .attr("y", 10)
-    // .attr("width", 50)
-    // .attr("height", 50)
-    // .attr("fill", "orange")
-    //
-    // this.svgGraph.append("rect")
-    // .attr("id","play")
-    // .attr("x", 70)
-    // .attr("y", 10)
-    // .attr("width", 50)
-    // .attr("height", 50)
-    // .attr("fill", "green")
-    //
-    // this.svgGraph.append("rect")
-    // .attr("id","pause")
-    // .attr("x", 130)
-    // .attr("y", 10)
-    // .attr("width", 50)
-    // .attr("height", 50)
-    // .attr("fill", "red")
-    //
-    // this.svgGraph.append("rect")
-    // .attr("id","mine")
-    // .attr("x", 190)
-    // .attr("y", 10)
-    // .attr("width", 50)
-    // .attr("height", 50)
-    // .attr("fill", "white")
+    this.svgGraph.append("rect")
+    .attr("id","step")
+    .attr("x", 10)
+    .attr("y", 10)
+    .attr("width", 50)
+    .attr("height", 50)
+    .attr("fill", "orange")
+
+    this.svgGraph.append("rect")
+    .attr("id","play")
+    .attr("x", 70)
+    .attr("y", 10)
+    .attr("width", 50)
+    .attr("height", 50)
+    .attr("fill", "green")
+
+    this.svgGraph.append("rect")
+    .attr("id","pause")
+    .attr("x", 130)
+    .attr("y", 10)
+    .attr("width", 50)
+    .attr("height", 50)
+    .attr("fill", "red")
+
+    this.svgGraph.append("rect")
+    .attr("id","mine")
+    .attr("x", 190)
+    .attr("y", 10)
+    .attr("width", 50)
+    .attr("height", 50)
+    .attr("fill", "white")
 
     this.addListeners();
   }
 
   addListeners(){
-    // let playButton = document.getElementById("play");
-    // playButton.addEventListener("click", e => {
-    //   if (!this.stepping) {
-    //     // this.solver.step();
-    //     this.step();
-    //   }
-    //   this.playback = true;
-    // })
-    //
-    // let stepButton = document.getElementById("step");
-    // stepButton.addEventListener("click", e => {
-    //   this.step();
-    // })
-    //
-    // let pauseButton = document.getElementById("pause");
-    // pauseButton.addEventListener("click", e => {
-    //   // this.solver.playback = false;
-    //   this.playback = false;
-    // })
-    //
-    // let mineButton = document.getElementById("mine");
-    // mineButton.addEventListener("click", e => {
-    //   // this.solver.playback = false;
-    //   this.mineIt();
-    // })
-
-    document.getElementById("step-animation").onclick = () => this.step();
-    document.getElementById("play-animation").onclick = () => {
-      debugger
+    let playButton = document.getElementById("play");
+    playButton.addEventListener("click", e => {
       if (!this.stepping) {
         // this.solver.step();
         this.step();
       }
       this.playback = true;
-    }
-    document.getElementById("stop-animation").onclick = () => this.playback = false;
-    document.getElementById("mine-animation").onclick = () => this.mineIt();
+    })
 
+    let stepButton = document.getElementById("step");
+    stepButton.addEventListener("click", e => {
+      this.step();
+    })
+
+    let pauseButton = document.getElementById("pause");
+    pauseButton.addEventListener("click", e => {
+      // this.solver.playback = false;
+      this.playback = false;
+    })
+
+    let mineButton = document.getElementById("mine");
+    mineButton.addEventListener("click", e => {
+      // this.solver.playback = false;
+      this.mineIt();
+    })
   }
 
   mineIt(){
@@ -100,7 +85,7 @@ class Solver {
     .duration(1000)
     .style("stroke", "black")
     .attr("fill", d => {
-      return `url(#${this.colorMap[d.color]})`
+      return d.color
     })
 
     const solutionBlocks = this.solution.slice(1).reverse();
@@ -125,17 +110,6 @@ class Solver {
     .duration(1000)
     .style("stroke","none")
     .attr("fill","none")
-
-    this.mineSvg.selectAll("text")
-    .filter(d => {
-      debugger
-      return this.findIndexFromRowCol(d.row,d.col) === block
-    })
-    .transition()
-    .duration(1000)
-    .style("fill","none")
-
-
   }
 
   BFS(graph, s, t, parent){
@@ -165,12 +139,11 @@ class Solver {
   }
 
   step(){
-    debugger
     this.stepping = true;
     this.count = 0;
     let graph = this.matrix;
     let source = 0;
-    let sink = this.findIndexFromRowCol(0,this.mine[0].length-1)+1;
+    let sink = 13;
     let parent = this.parent;
     if (this.BFS(graph, source, sink, parent).pathToSink){
       let path_flow = 91;
@@ -401,14 +374,10 @@ class Solver {
       //   }
       // })
       .style("stroke", (d) => {
-        if (d.border === "red"){
-          return "red"
+        if (solution.includes(this.findIndexFromRowCol(d.row,d.col))){
+          return "black"
         }else{
-          if (solution.includes(this.findIndexFromRowCol(d.row,d.col))){
-            return "black"
-          }else{
-            return "white"
-          }
+          return "white"
         }
       })
       .attr("fill", d => {
@@ -464,16 +433,7 @@ class Solver {
   }
 
   findIndexFromRowCol(row,col){
-    let minRow = this.mine[this.mine.length-1].length;
-    let height = this.mine.length;
-    let offset;
-    if (row === this.mine.length - 1){
-      offset = 0;
-    }else{
-      let n = height-2-row;
-      offset = (n*(n+1))/2;
-    }
-    return minRow*(height-1-row) + col + 1 + offset;
+    return 4 * (2-row) + (col + 1)
   }
 
   animatePath(path, count, type,graph) {
@@ -502,9 +462,6 @@ class Solver {
           }else if (type === "augment"){
             return "#039ab5"
           }
-        })
-        .style("stroke-width", d => {
-          return (d.capacity > 5 ? 4 : 8);
         })
 
         this.mineSvg.selectAll("rect").filter((d) => {
@@ -546,25 +503,13 @@ class Solver {
         .transition()
         .duration(this.animationInterval)
         .style("stroke", (d)=>{
-          debugger
           if (d.capacity === this.infCapacity){
             return "#444444"
           }else if (d.target.label === "t"){
-            if (d.capacity === 3){
-              return `url(#rust)`;
-            }else{
-              return `url(#stone)`;
-            }
+            return "#8b4516"
           }else if ( d.source.label === "s"){
-            if (d.capacity === 5){
-              return `url(#gold)`;
-            }else{
-              return `url(#silver)`;
-            }
+            return "#ffd724"
           }
-        })
-        .style("stroke-width", d => {
-          return (d.capacity > 5 ? 4 : 8);
         })
 
         this.mineSvg.selectAll("rect")
@@ -575,8 +520,7 @@ class Solver {
         .transition()
         .duration(this.animationInterval)
         .attr("fill", (d)=>{
-          debugger
-          return `url(#${this.colorMap[d.color]})`;
+          return d.color;
         })
       }, this.animationInterval*count)
     }

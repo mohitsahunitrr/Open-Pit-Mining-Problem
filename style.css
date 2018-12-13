@@ -1,7 +1,198 @@
+.mineSvg {
+    /* background-color: black; */
+}
+
+h1, .mine-button, .graph-button, .the-algorithm, .the-mine {
+  font-family: 'Unlock', cursive;
+}
+
+body.active {
+  cursor: url(Cursor-Pickaxe.png), auto;
+}
+
 h1 {
+  display: flex;
+  justify-content: center;
+  text-decoration: underline;
+  font-size: 42px;
+}
+
+h1, h2 {
   color: white;
+}
+
+h2 {
+  margin: 10px 0 10px 0;
+  /* display: flex;
+  justify-content: center; */
+}
+
+.mineSvg > g > circle:hover, .mineSvg > g > rect:hover{
+  cursor: pointer;
+}
+
+i{
+  color: white;
+  font-size: 50px;
+}
+
+.mine-text{
+  /* font-family: 'Unlock', cursive;
+  font-weight: 200; */
+}
+
+.strong-select{
+  color: #cf3d34;
+}
+
+.strong-run{
+  color: #078c42
+}
+
+.the-mine, .the-algorithm{
+  display: flex;
+  justify-content: center;
+  /* text-decoration: underline; */
+  font-size: 32px;
+  border-bottom: 3px solid white;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 body{
   background: #051938;
 }
+
+button {
+  margin-left: 2px;
+  margin-right: 2px;
+  font-size: 20px;
+}
+
+.mine-buttons, .graph-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.rules-header{
+  text-decoration: underline;
+}
+
+.rules-list {
+  padding-left: 20px;
+}
+
+.rules-list > li {
+  margin-top: 10px;
+  color: white;
+  font-size: 18px;
+}
+
+.mine-button{
+  font-family: 'Unlock', cursive;
+  width: 175px;
+  height: 50px;
+  border-radius: 10px;
+  border: 5px solid #4e88e5;
+  font-weight: 200;
+  background-color: #245199;
+  color: white;
+  transition: .3s;
+  cursor: pointer;
+}
+
+.mine-button:first-of-type{
+  color: #cf3d34;
+}
+
+.mine-button:hover{
+  border: 5px solid #245199;
+  font-weight: 200;
+  background-color: #4e88e5;
+}
+
+rect:hover{
+  /* cursor: url(Cursor-Pickaxe.png), auto; */
+}
+
+
+.mine-buttons{
+  width: 700px;
+}
+
+.visuals {
+  display: flex;
+  flex-direction: row;
+}
+
+.graph-button{
+  font-family: 'Unlock', cursive;
+  width: 200px;
+  height: 50px;
+  border-radius: 10px;
+  font-weight: 200;
+  color: white;
+  transition: .3s;
+  cursor: pointer;
+}
+
+.graph-button:nth-of-type(1){
+  border: 5px solid #ffaa00;
+  background-color: #c48200;
+}
+
+.graph-button:nth-of-type(1):hover{
+  border: 5px solid #c48200;
+  background-color: #ffaa00;
+}
+
+.graph-button:nth-of-type(2){
+  background-color: #0b5e30;
+  border: 5px solid #078c42;
+}
+
+.graph-button:nth-of-type(2):hover{
+  background-color: #078c42;
+  border: 5px solid #0b5e30;
+}
+
+.graph-button:nth-of-type(3){
+  background-color: #993030;
+  border: 5px solid #d13434;
+}
+
+.graph-button:nth-of-type(3):hover{
+  background-color: #d13434;
+  border: 5px solid #993030;
+}
+
+.graph-button:nth-of-type(4){
+  background-color: #888888;
+  border: 5px solid white;
+}
+
+.graph-button:nth-of-type(4):hover{
+  background-color: white;
+  border: 5px solid #888888;
+  color: black;
+}
+
+.graph-items{
+  margin-left: 50px;
+}
+
+.mine-items{
+  margin-left: 50px;
+}
+
+/* .personal-links{
+  width: 100px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+} */
+/* .svgGraph {
+  margin-left: 150px;
+} */

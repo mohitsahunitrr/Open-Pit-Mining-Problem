@@ -106,9 +106,9 @@ class Graph {
     this.mineH;
     this.mineW;
     this.infCapacity = 1000000;
-    this.svgWidth = 900;
-    this.svgHeight = 900;
-    this.svgGraph = d3.select("body").append("svg").attr("class","svgGraph").attr("width", this.svgWidth).attr("height", this.svgHeight);
+    this.svgWidth = 820;
+    this.svgHeight = window.innerHeight-250;
+    this.svgGraph = d3.select(".svgGraphBody").append("svg").attr("class","svgGraph").attr("width", this.svgWidth).attr("height", this.svgHeight);
     this.nodes = [];
     this.links = [];
     this.node;
@@ -118,7 +118,7 @@ class Graph {
     this.nodeLabelList = "abcdefghijklmnopqruvwxyz"
     this.innerNodeCount;
     this.force;
-    this.animationInterval = 100;
+    this.animationInterval = 1000;
     this.parent = [];
 
     this.count = 0;
@@ -152,19 +152,11 @@ class Graph {
   }
 
   findBlocksAbove(i,j,mine){
-    // debugger
-    const result = [];
-    if (i === 0) return result;
-    if (j > 0) result.push([i-1,j-1]);
-    result.push([i-1,j]);
-    if (j < mine[0].length - 1) result.push([i-1,j+1]);
-    // debugger
-    return result;
+    if (i === 0) return [];
+    return [[i-1,j],[i-1,j+1]]
   }
 
   findNodeNum(i,j,mine){
-    // debugger
-    // return 1 + (this.mineH - 1 - i)*this.mineW + j
     return 1 + mine[i][j].idx;
   }
 
@@ -196,23 +188,9 @@ class Graph {
             let intCol = this.findNodeNum(pos[0],pos[1],this.mine);
             this.matrix[intRow][intCol] = this.infCapacity;
           })
-          // debugger
-          i;
-          // nodeLayers;
-          // debugger
-          // if (nodeLayers[i][0] === el.idx){
-          //   this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: this.svgWidth/10, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
-          // }else if (nodeLayers[i][1] === el.idx){
-          //   this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: 9*this.svgWidth/10, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
-          // }else{
-          //   this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit});
-          // }
         }
       })
     })
-    // this.nodes.unshift({label: "s", index: 0, profit: null, fixed: true, x: this.svgWidth/2, y: this.svgHeight-50});
-    // this.nodes.push({label: "t", index: matrixSize-1, profit: null, fixed: true, x: this.svgWidth/2, y: 50});
-    // debugger
     this.populateNodes(mineObj);
   }
 
@@ -225,24 +203,17 @@ class Graph {
       tmpRow.reverse().forEach((el,j) => {
         if (el.profit !== null){
           this.innerNodeCount--;
-          // if (nodeLayers[i][0] === el.idx){
-          //   this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: this.svgWidth/10, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
-          // }else if (nodeLayers[i][1] === el.idx){
-          //   this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: 9*this.svgWidth/10, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
-          // }else{
-          //   this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: this.svgWidth - (j*this.svgWidth/3) + ((1.5-j)*(1 - Math.abs(i - 1)))*100, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1) + 50*(i-1))});
-          // }
           if (nodeLayers[i][0] === el.idx){
-            this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: this.svgWidth/10, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
+            this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: this.svgWidth/8, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
           }else if (nodeLayers[i][1] === el.idx){
-            this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: 9*this.svgWidth/10, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
+            this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: 7*this.svgWidth/8, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
           }else{
             this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit});
           }
         }
       })
     })
-    this.nodes.unshift({label: "s", index: 0, profit: null, fixed: true, x: this.svgWidth/2, y: this.svgHeight-50});
+    this.nodes.unshift({label: "s", index: 0, profit: null, fixed: true, x: this.svgWidth/2, y: this.svgHeight-25});
     this.nodes.push({label: "t", index: matrixSize-1, profit: null, fixed: true, x: this.svgWidth/2, y: 50});
     debugger;
   }
@@ -262,62 +233,7 @@ class Graph {
     debugger
   }
 
-  // addListeners(){
-  //   let playButton = document.getElementById("play");
-  //   playButton.addEventListener("click", e => {
-  //     if (!this.stepping) {
-  //       // this.solver.step();
-  //       this.step();
-  //     }
-  //     this.playback = true;
-  //   })
-  //
-  //   let stepButton = document.getElementById("step");
-  //   stepButton.addEventListener("click", e => {
-  //     this.solver.step();
-  //     this.step();
-  //   })
-  //
-  //   let pauseButton = document.getElementById("pause");
-  //   pauseButton.addEventListener("click", e => {
-  //     // this.solver.playback = false;
-  //     this.playback = false;
-  //   })
-  // }
-
   renderGraph(){
-    // this.svgGraph = d3.select('body').append('svg')
-    // .attr('width', this.svgWidth)
-    // .attr('height', this.svgHeight);
-
-    //
-    //apply force conditions
-
-    // this.svgGraph.append("rect")
-    // .attr("id","step")
-    // .attr("x", 10)
-    // .attr("y", 10)
-    // .attr("width", 50)
-    // .attr("height", 50)
-    // .attr("fill", "orange")
-    //
-    // this.svgGraph.append("rect")
-    // .attr("id","play")
-    // .attr("x", 70)
-    // .attr("y", 10)
-    // .attr("width", 50)
-    // .attr("height", 50)
-    // .attr("fill", "green")
-    //
-    // this.svgGraph.append("rect")
-    // .attr("id","pause")
-    // .attr("x", 130)
-    // .attr("y", 10)
-    // .attr("width", 50)
-    // .attr("height", 50)
-    // .attr("fill", "red")
-
-
     this.force = d3.layout.force()
     .size([this.svgWidth, this.svgHeight])
     .nodes(d3.values(this.nodes))
@@ -358,10 +274,10 @@ class Graph {
       })
     })
     // .linkDistance(100)
-    .gravity(0.01)
-    .charge(-1500)
+    .gravity(0.1)
+    .charge(-1200)
     // .linkDistance(100)
-    .linkStrength(0.1)
+    .linkStrength(0.4)
     .start();
 
     //create links
@@ -376,13 +292,26 @@ class Graph {
         if (d.capacity === infCapacity){
           return "#444"
         }else if (d.target.label === "t"){
-          return "#8B4513"
+          if (d.capacity === 3){
+            return "url(#rust)"
+          }else{
+            return "url(#stone)"
+          }
+          // return "#8B4513"
         }else if ( d.source.label === "s"){
-          return "#FFD700"
+          if (d.capacity === 5){
+            return "url(#gold)"
+          }else{
+            return "url(#silver)"
+          }
+          // return "#FFD700"
         }
       })
       .attr("marker-end","url(#arrowhead)")
-      .style("stroke-width", "4")
+      .style("stroke-width", d => {
+        if (d.capacity === infCapacity) return 4;
+        else return 8
+      })
 
       //create nodes
       this.node = this.svgGraph.selectAll(".node")
@@ -424,554 +353,70 @@ class Graph {
       .append('path')
       .attr({'d': function(d) {
         //
-        return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
-        'class':'edgepath',
-        'fill-opacity':0,
-        'stroke-opacity':0,
-        'fill':'blue',
-        'stroke':'red',
-        'id':function(d,i) {return `edgepath:${d.source.index}-${d.target.index}`}})
-        .style("pointer-events", "none");
+      return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+      'class':'edgepath',
+      'fill-opacity':0,
+      'stroke-opacity':0,
+      'fill':'blue',
+      'stroke':'red',
+      'id':function(d,i) {return `edgepath:${d.source.index}-${d.target.index}`}})
+      .style("pointer-events", "none");
+      //
+      this.edgelabels = this.svgGraph.selectAll(".edgelabel")
+      .data(this.links)
+      .enter()
+      .append('text')
+      .style("pointer-events", "none")
+      .attr({'class':'edgelabel',
+      'id':function(d,i){return 'edgelabel'+i},
+      'dx':80,
+      'dy':-7,
+      'font-size':20,
+      'fill':'#ccc'});
+      //
+      //
+      this.edgelabels.append('textPath')
+      .attr('xlink:href',function(d,i) {
         //
-        this.edgelabels = this.svgGraph.selectAll(".edgelabel")
-        .data(this.links)
-        .enter()
-        .append('text')
+        return `#edgepath:${d.source.index}-${d.target.index}`})
+        // return '#edgepath'+i})
         .style("pointer-events", "none")
-        .attr({'class':'edgelabel',
-        'id':function(d,i){return 'edgelabel'+i},
-        'dx':80,
-        'dy':-5,
-        'font-size':20,
-        'fill':'#aaa'});
-        //
-        //
-        this.edgelabels.append('textPath')
-        .attr('xlink:href',function(d,i) {
-          //
-          return `#edgepath:${d.source.index}-${d.target.index}`})
-          // return '#edgepath'+i})
-          .style("pointer-events", "none")
-          .text(function(d){
-            // `${d.capacity}`
-            let cap;
-            if (d.capacity === infCapacity){
-              cap = `∞`
-            }
-            else{
-              cap = `${d.capacity}`
-            }
-            return `${d.res}:${cap}`});
-
-
-            this.svgGraph.append('defs').append('marker')
-                .attr({'id':'arrowhead',
-                       'viewBox':'-0 -5 10 10',
-                       'refX':25,
-                       'refY':0,
-                       //'markerUnits':'strokeWidth',
-                       'orient':'auto',
-                       'markerWidth':4,
-                       'markerHeight':4,
-                       'xoverflow':'visible'})
-                .append('svg:path')
-                    .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
-                    .attr('fill', '#ccc')
-
-    // debugger
-    // this.svgGraph.append("circle").attr("cx",100).attr("cy",100).attr("r",20).attr("fill","white");
-    // debugger
-     // debugger
-
-    // this.link = this.svgGraph.append("g").selectAll('.link')
-    //     .data(this.links)
-    //     .enter().append('line')
-    //     .attr("class", "link")
-    //     .attr('id', function(d) {
-    //       return `link_${d.id}`})
-    //     .style("stroke", function(d){
-    //       if (d.capacity === this.infCapacity){
-    //         return "#000"
-    //       }else if (d.target.label === "t"){
-    //         return "#632f12"
-    //       }else if ( d.source.label === "s"){
-    //         return "#fff"
-    //       }
-    //     })
-    //     // .attr("marker-end","url(#arrowhead)")
-    //     .style("stroke-width", "4")
-    //
-    //     // const this = this;
-    //     this.force = d3.layout.force()
-    //     .size(function(){[this.svgWidth, this.svgHeight]})
-    //     .nodes(d3.values(this.nodes))
-    //     .links(this.links)
-    //     .on("tick", () => {
-    //       debugger
-    //         this.node.attr('cx', function(d) {
-    //           debugger
-    //             return d.x;
-    //           })
-    //           .attr('cy', function(d) { return d.y; })
-    //           .attr("transform", function(d) { return `translate(${d.x},${d.y})`; });
-    //
-    //         this.link.attr('x1', function(d) { return d.source.x; })
-    //             .attr('y1', function(d) { return d.source.y; })
-    //             .attr('x2', function(d) { return d.target.x; })
-    //             .attr('y2', function(d) { return d.target.y; });
-    //
-    //
-    //         this.edgepaths.attr('d', function(d) {
-    //           let path='M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y;
-    //           return path
-    //         });
-    //
-    //         this.edgelabels.attr("transform", function(d,i){
-    //           if (d.target.x < d.source.x){
-    //             bbox = this.getBBox();
-    //             rx = bbox.x + bbox.width/2;
-    //             ry = bbox.y + bbox.height/2;
-    //             return `rotate(180 ${rx} ${ry})`;
-    //           }
-    //           else{
-    //             return "rotate(0)";
-    //           }
-    //         })
-    //     })
-    //     // .linkDistance(100)
-    //     .gravity(0.1)
-    //     .charge(-1200)
-    //     .linkDistance(120)
-    //     .linkStrength(0.1)
-    //     .start();
-    //   this.node = this.svgGraph.selectAll(".node")
-    //   .data(this.nodes)
-    //   .enter().append("g")
-    //   .attr('class', 'node')
-    //   // .attr("transform",transform);
-    //   .call(this.force.drag);
-    //   // debugger
-    //
-    //   this.node.append("circle")
-    //   .attr('r', 12)
-    //   .attr("fill", function(d) {
-    //     if (d.label === "s"){
-    //       return "#ce9308"
-    //     }else if (d.label === "t"){
-    //       return "#969696"
-    //     }else if (d.profit !== null && d.profit > 0){
-    //       return "#31703d"
-    //     }else if (d.profit !== null && d.profit <= 0){
-    //       return "#961919"
-    //     }
-    //   })
-    //   .style("stroke", "#fff")
-    //   .style("stroke-weight", "3")
-    //
-    //   this.node.append("text")
-    //   .attr("class","nodeLabel")
-    //   .attr("dx", "-.2em")
-    //   .attr("dy", ".35em")
-    //   .style("fill", "white")
-    //   .text(function(d) {return d.label})
-    //
-    //   this.edgepaths = this.svgGraph.selectAll(".edgepath")
-    //       .data(this.links)
-    //       .enter()
-    //       .append('path')
-    //       .attr({'d': function(d) {
-    //         // debugger
-    //         return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
-    //              'class':'edgepath',
-    //              'fill-opacity':0,
-    //              'stroke-opacity':0,
-    //              'fill':'blue',
-    //              'stroke':'red',
-    //              'id':function(d,i) {return `edgepath:${d.source.index}-${d.target.index}`}})
-    //       .style("pointer-events", "none");
-    //   //
-    //       this.edgelabels = this.svgGraph.selectAll(".edgelabel")
-    //           .data(this.links)
-    //           .enter()
-    //           .append('text')
-    //           .style("pointer-events", "none")
-    //           .attr({'class':'edgelabel',
-    //                  'id':function(d,i){return 'edgelabel'+i},
-    //                  'dx':80,
-    //                  'dy':-5,
-    //                  'font-size':20,
-    //                  'fill':'#aaa'});
-    //   //
-    //   //
-    //        this.edgelabels.append('textPath')
-    //            .attr('xlink:href',function(d,i) {
-    //              // debugger
-    //               return `#edgepath:${d.source.index}-${d.target.index}`})
-    //              // return '#edgepath'+i})
-    //            .style("pointer-events", "none")
-    //            .text(function(d){
-    //              // debugger`${d.capacity}`
-    //              let cap;
-    //              if (d.capacity === this.infCapacity){
-    //                cap = `∞`
-    //              }
-    //              else{
-    //                cap = `${d.capacity}`
-    //              }
-    //              return `${d.res}:${cap}`});
-    //
-
-    debugger
-    this.solver = new _solver_js__WEBPACK_IMPORTED_MODULE_0__["default"](this.stepping, this.playback, this.count, this.matrix, this.parent, this.max_flow, this.svgGraph, this.mineSvg);
-  }
-
-
-  BFS(graph, s, t, parent){
-    debugger
-    let visited = [];
-    for (let i = 0; i < 5; i++){
-      visited.push(false);
-    }
-
-    let queue = [];
-
-    queue.push(s);
-    visited[s] = true;
-    //
-    while (queue.length > 0) {
-      let currentVtx = queue.shift();
-
-      graph[currentVtx].forEach((val, i) => {
-        if (!visited[i] && val > 0){
-          queue.push(i);
-          visited[i] = true;
-          parent[i] = currentVtx;
-        }
-      })
-    }
-    return {pathToSink: visited[t], parent}
-  }
-
-  step(){
-    this.stepping = true;
-    this.count = 0;
-    let graph = this.matrix;
-    let source = 0;
-    let sink = 13;
-    let parent = this.parent;
-    if (this.BFS(graph, source, sink, parent).pathToSink){
-      let path_flow = 91;
-      let s = sink;
-      let path = [s];
-      while (s != source){
-        debugger
-        path_flow = Math.min(path_flow, graph[parent[s]][s]);
-        s = parent[s];
-        path.unshift(s);
-      }
-      //
-      this.animatePath(path, this.count, "search");
-      this.max_flow = this.max_flow + path_flow;
-      //
-      this.count = this.count + (path.length - 1);
-
-      let t = sink;
-      let augmentingPath = [t];
-      while (t != source){
-        let u = parent[t];
-        graph[u][t] =  graph[u][t] - path_flow;
-        graph[t][u] = graph[t][u] + path_flow;
-        let z = graph[u][t];
-        this.animateAugment(u,t,this.count,graph);
-        this.count = this.count + 1;
-        //
-        // updateCapacities(u,t,this.count);
-        t = parent[t];
-        augmentingPath.push(t)
-      }
-      // animatePath(augmentingPath, this.count, "augment",graph)
-
-      // this.count = this.count + (path.length - 1);
-      //
-
-      this.resetBFSLinks(path, this.count);
-
-      this.count = this.count + 1;
-      setTimeout(() => {
-        this.stepping = false;
-        if (this.playback){
-          debugger
-          this.count = this.count + 1;
-            this.step()
-        }
-        // else{
-        //   count = 0;
-        // }
-      }, this.count*this.animationInterval);
-    }
-    debugger
-  }
-
-
-  EK(graph, source, sink){
-
-    while (this.BFS(graph, source, sink, parent).pathToSink) {
-      let path_flow = 91;
-      let s = sink;
-      let path = [s];
-      while (s != source){
-        path_flow = Math.min(path_flow, graph[parent[s]][s]);
-        s = parent[s];
-        path.unshift(s);
-      }
-      //
-      this.animatePath(path, this.count, "search");
-      max_flow = max_flow + path_flow;
-      //
-      this.count = this.count + (path.length - 1);
-
-      let t = sink;
-      let augmentingPath = [t];
-      while (t != source){
-        let u = parent[t];
-        graph[u][t] =  graph[u][t] - path_flow;
-        graph[t][u] = graph[t][u] + path_flow;
-        let z = graph[u][t];
-        this.animateAugment(u,t,this.count,graph);
-        this.count = this.count + 1;
-        //
-        // updateCapacities(u,t,count);
-        t = parent[t];
-        augmentingPath.push(t)
-      }
-      // animatePath(augmentingPath, count, "augment",graph)
-
-      // count = count + (path.length - 1);
-      //
-
-      this.resetBFSLinks(path, this.count);
-      this.count = this.count + 1;
-    }
-
-    let solution = [0];
-    let queue = [0]
-    let solutionEdges = [];
-
-    //finds solution nodes
-    graph[0].forEach((el,i) => {
-      if (el > 0){
-        solution.push(i);
-        queue.push(i);
-        solutionEdges.push([0,i]);
-      }
-    })
-    //
-    while (queue.length > 0){
-      let nextNode = queue.shift();
-      graph[nextNode].forEach((el,i) => {
-        if (el > 0 && !solution.includes(i)){
-          solution.push(i);
-          queue.push(i);
-          solutionEdges.push([nextNode,i]);
-        }
-      })
-    }
-    this.count = this.count + 1;
-
-
-    return {max_flow, solution, count:this.count, solutionEdges};
-  }
-
-  updateCapacities(source,target,count,graph){
-    //
-    setTimeout(() => {
-      //
-      this.svgGraph.selectAll("textPath")
-      .filter(function(d){
-        //
-        return d.source.index === source && d.target.index === target;
-      })
-      .text((d) => {
-        //
-        let cap;
-        debugger
-        if (d.capacity === this.infCapacity){
-          cap = `∞`
-        }
-        else{
-          cap = `${d.capacity}`
-        }
-        //
-        return `${d.capacity - graph[source][target]}:${cap}`
-      })
-    },this.animationInterval/2);
-  }
-
-  pathMatch(tmpArr, solutionArr){
-    let result = false;
-    solutionArr.forEach(arr => {
-      if (tmpArr[0] === arr[0] && tmpArr[1] === arr[1]){
-        result = true;
-      }
-    })
-    return result;
-  }
-
-  highlightSolution(solution, count, solutionEdges){
-    setTimeout(function(){
-      this.svgGraph.selectAll("circle")
-      // .filter(function(d) {
-      //   //
-      //   return solution.includes(d.index);
-      // })
-      .transition()
-      .duration(1000)
-      .attr("fill", function(d){
-        if (solution.includes(d.index)){
-          return "white"
-        }else{
-          return "black"
-        }
-      })
-
-      this.svgGraph.selectAll("text")
-      // .filter(function(d) {
-      //   //
-      //   return solution.includes(d.index);
-      // })
-      .transition()
-      .duration(1000)
-      .style("fill", function(d){
-        // return "black"
-        if (solution.includes(d.index)){
-          return "black"
-        }else{
-          return "gray"
-        }
-      });
-
-      // this.svgGraph.selectAll(".link").filter(function(d) {
-      //   let tmp = [d.source.index,d.target.index];
-      //   //
-      //   pathMatch(tmp,solutionEdges)
-      //   return pathMatch(tmp,solutionEdges);
-      // })
-      // .transition()
-      // .duration(1000)
-      // .style("stroke", "red")
-    },this.animationInterval*count)
-  }
-
-  animateAugment(source,target,count,graph){
-    // updateCapacities(source,target,count,graph);
-    setTimeout(() => {
-      this.svgGraph.selectAll(".link")
-      .filter((d)=>{
-        //
-        if (d.source.index === source && d.target.index === target){
-          //
-          this.updateCapacities(d.source.index, d.target.index,count,graph);
-          return true;
-        // return d.source.index === path[i+1] && d.target.index === path[i]
-        }
-      })
-      .transition()
-      .duration(this.animationInterval)
-      .style("stroke", function(){
-          return "#039ab5"
-      })
-    }, this.animationInterval*count)
-  }
-
-  findBlockNum(id){
-    const nums = id.split(":");
-    const parsedNums = nums.split("-");
-    const first = parsedNums[0];
-    const second = parsedNums[1];
-    return 12 - (first*4) - second;
-  }
-
-  animatePath(path, count, type,graph) {
-    debugger
-    for (let i = 0; i < path.length - 1; i++){
-      debugger
-      setTimeout(() => {
-        this.svgGraph.selectAll(".link")
-        .filter(function(d){
-          if (type === "search"){
-            return d.source.index === path[i] && d.target.index === path[i+1]
-          }else{
-            if (d.source.index === path[i+1] && d.target.index === path[i]){
-              //
-              this.updateCapacities(d.source.index, d.target.index,count,graph);
-              return true;
-            }
-            // return d.source.index === path[i+1] && d.target.index === path[i]
+        .text(function(d){
+          // `${d.capacity}`
+          let cap;
+          if (d.capacity === infCapacity){
+            cap = `∞`
           }
-        })
-        .transition()
-        .duration(this.animationInterval)
-        .style("stroke", function(){
-          if (type === "search"){
-            return "red"
-          }else if (type === "augment"){
-            return "#039ab5"
+          else{
+            cap = `${d.capacity}`
           }
-        })
-        // this.svgGraph.selectAll(".link")
-        // .filter(function(d){
-        //   if (type === "search"){
-        //     return d.source.index === path[i] && d.target.index === path[i+1]
-        //   }else{
-        //     if (d.source.index === path[i+1] && d.target.index === path[i]){
-        //       //
-        //       this.updateCapacities(d.source.index, d.target.index,count,graph);
-        //       return true;
-        //     }
-        //     // return d.source.index === path[i+1] && d.target.index === path[i]
-        //   }
-        // })
-        // .transition()
-        // .duration(this.animationInterval)
-        // .style("stroke", function(){
-        //   if (type === "search"){
-        //     return "red"
-        //   }else if (type === "augment"){
-        //     return "#039ab5"
-        //   }
-        // })
-      }, this.animationInterval*count)
-      count = count + 1
-      //
-    }
+          return `${d.res}:${cap}`});
 
+
+      this.svgGraph.append('defs').append('marker')
+          .attr({'id':'arrowhead',
+                 'viewBox':'-0 -5 10 10',
+                 'refX':50,
+                 'refY':0,
+                 //'markerUnits':'strokeWidth',
+                 'orient':'auto',
+                 'markerWidth':3,
+                 'markerHeight':3,
+                 'xoverflow':'visible'})
+          .append('svg:path')
+              .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+              .attr('fill', '#ccc')
+
+    debugger
+    this.addListeners();
+    this.solver = new _solver_js__WEBPACK_IMPORTED_MODULE_0__["default"](this.stepping, this.playback, this.count, this.matrix, this.parent, this.max_flow, this.svgGraph, this.mineSvg, this.mine);
   }
 
-  resetBFSLinks(path,count){
-    for (let i = 0; i < path.length - 1; i++){
-      setTimeout(() => {
-        this.svgGraph.selectAll(".link")
-        .filter(function(d){
-          //
-          return d.source.index === path[i] && d.target.index === path[i+1]
-        })
-        .transition()
-        .duration(this.animationInterval)
-        .style("stroke", (d)=>{
-          if (d.capacity === this.infCapacity){
-            return "#444444"
-          }else if (d.target.label === "t"){
-            return "#8b4516"
-          }else if ( d.source.label === "s"){
-            return "#ffd724"
-          }
-        })
-      }, this.animationInterval*count)
-    }
+  addListeners(){
+    // document.getElementById("step-animation").onclick = () => this.addRow();
+    // document.getElementById("play-animation").onclick = () => this.removeRow();
+    // document.getElementById("stop-animation").onclick = () => this.reset();
   }
-
-
-
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Graph);
@@ -1394,46 +839,74 @@ class Mine {
       //   {profit: -1, idx: 18},
       //   {profit: -1, idx: 19}
       // ],
+
+
+      // [
+      //   {profit: -1, idx: 12},
+      //   {profit: -1, idx: 13},
+      //   {profit: -1, idx: 14},
+      //   {profit: -1, idx: 15},
+      //   {profit: -1, idx: 16},
+      //   {profit: -1, idx: 17},
+      //   // {profit: -1, idx: 14}
+      // ],
       [
+        {profit: -3, idx: 7},
         {profit: -1, idx: 8},
-        {profit: -1, idx: 9},
-        {profit: -1, idx: 10},
-        {profit: -1, idx: 11},
-        // {profit: -1, idx: 14}
+        {profit: -3, idx: 9},
+        {profit: -3, idx: 10},
+        {profit: -3, idx: 11},
+        // {profit: -2, idx: 14}
       ],
       [
-        {profit: 1, idx: 4},
-        {profit: 1, idx: 5},
-        {profit: 1, idx: 6},
-        {profit: 1, idx: 7},
+        {profit: -1, idx: 3},
+        {profit: 2, idx: 4},
+        {profit: 5, idx: 5},
+        {profit: 5, idx: 6},
         // {profit: -1, idx: 9}
       ],
       [
-        {profit: 1, idx: 0},
-        {profit: 1, idx: 1},
-        {profit: 1, idx: 2},
-        {profit: 1, idx: 3},
+        {profit: 5, idx: 0},
+        {profit: 5, idx: 1},
+        {profit: 2, idx: 2},
         // {profit: 1, idx: 4}
       ]
     ];
+    this.guessing = false;
+    this.blockLabelList = "abcdefghijklmnopqruvwxyz"
     this.nodeLayers;
     this.updateNodeLayers(this.mine);
-    this.numBlocks = 12;
+    // debugger
+    this.numBlocks = 0;
+    this.findNumBlocks();
     this.block;
-    this.svg = d3.select("body").append("svg").attr("width", 700).attr("height", 900)
+    this.svg = d3.select(".svgMineBody").append("svg").attr("class","mineSvg").attr("width", 700).attr("height", window.innerHeight-450)
     this.blocks = [];
-    this.blockSelectors = [{id: 0, color: "#FFD700", profit: 1}, {id: 1, color: "#8B4513", profit: -1}];
-    this.currentBlockType =  {id: 1, color: "#8B4513", profit: -1};
+    this.blockSelectors = [
+      {id: 0, color: "#FFD700", profit: 5, type: "selector", texture: "gold"},
+      {id: 1, color: "#c8c8c8", profit: 2, type: "selector", texture: "silver"},
+      {id: 2, color: "#bdad9c", profit: -1, type: "selector", texture: "stone"},
+      {id: 3, color: "#8B4513", profit: -3, type: "selector", texture: "rust"},
+      // {id: 3, color: "#8B4513", profit: -1, type: "selector", texture: "rust"}
+    ];
+    this.currentBlockType = this.blockSelectors[1];
     this.drawMine();
-    this.addListeners();
+    // this.addListeners();
     this.graph = new _graph_js__WEBPACK_IMPORTED_MODULE_0__["default"](this.svg);
     this.graph.generateMatrixFromMine(this);
     this.graph.populateLinks();
     this.presentGraph();
-    //
     // this.graph.generateMatrixFromMine(this);
+    //
     // this.graph.populateLinks(this.mine);
     // this.presentGraph();
+  }
+
+  findNumBlocks(){
+    this.numBlocks = 0;
+    this.mine.forEach(row=>{
+      row.forEach(() => this.numBlocks++)
+    });
   }
 
   updateNodeLayers(mine){
@@ -1460,10 +933,65 @@ class Mine {
       // debugger
     })
     this.nodeLayers = result;
-    debugger
+    // debugger
+  }
+
+  findIndexFromRowCol(row,col){
+    let minRow = this.mine[this.mine.length-1].length;
+    let height = this.mine.length;
+    let offset;
+    if (row === this.mine.length - 1){
+      offset = 0;
+    }else{
+      let n = height-2-row;
+      offset = (n*(n+1))/2;
+    }
+    return minRow*(height-1-row) + col + 1 + offset;
   }
 
   drawMine(){
+    let defs = this.svg.append("defs");
+
+    defs.append("pattern")
+    .attr("id", "gold")
+    .attr("height","100%")
+    .attr("width","100%")
+    .attr("patternContentUnits","objectBoundingBox")
+    .append("image")
+    .attr("height", 1)
+    .attr("width", 1)
+    .attr("preserveAspectRatio", "none")
+    .attr("xlink:href","gold.jpg");
+    defs.append("pattern")
+    .attr("id", "rust")
+    .attr("height","100%")
+    .attr("width","100%")
+    .attr("patternContentUnits","objectBoundingBox")
+    .append("image")
+    .attr("height", 1)
+    .attr("width", 1)
+    .attr("preserveAspectRatio", "none")
+    .attr("xlink:href","rust.jpeg");
+    defs.append("pattern")
+    .attr("id", "silver")
+    .attr("height","100%")
+    .attr("width","100%")
+    .attr("patternContentUnits","objectBoundingBox")
+    .append("image")
+    .attr("height", 1)
+    .attr("width", 1)
+    .attr("preserveAspectRatio", "none")
+    .attr("xlink:href","silver.jpg");
+    defs.append("pattern")
+    .attr("id", "stone")
+    .attr("height","100%")
+    .attr("width","100%")
+    .attr("patternContentUnits","objectBoundingBox")
+    .append("image")
+    .attr("height", 1)
+    .attr("width", 1)
+    .attr("preserveAspectRatio", "none")
+    .attr("xlink:href","stone.jpg");
     // console.log(5);
     this.mine.forEach((row,i) => {
       row.forEach((block,j) => {
@@ -1476,9 +1004,13 @@ class Mine {
           })[0].color
         }
         // debugger
-        this.blocks.push({profit: block.profit, row: i, col: j, color})
+        this.blocks.push({profit: block.profit, row: i, col: j, color, type: block, border: "black"})
       })
     })
+
+    let width = 50;
+    this.mine
+
     this.block = this.svg.selectAll(".block")
     .data(this.blocks)
     .enter().append("g")
@@ -1486,11 +1018,11 @@ class Mine {
 
     // debugger
     this.block.append("rect")
-    .attr("x", function(d){
-      return 100 + 100*d.col
+    .attr("x", (d) => {
+      return 100 + d.row*50 + 102*d.col + (3 - this.mine.length)*50
     })
     .attr("y", function(d){
-      return 200 + 100*d.row
+      return 125 + 102*d.row
     })
     .attr("id",function(d){
       return `rect:${d.row}-${d.col}`
@@ -1501,13 +1033,39 @@ class Mine {
       if (d.profit === null){
         return "black"
       }
-      else if (d.profit > 0){
-        return "#FFD700"
-      }else{
-        return "#8B4513"
+      else if (d.profit === 5){
+        return "url(#gold)"
+      }else if (d.profit === -3){
+        return "url(#rust)"
+      }else if (d.profit === 2){
+        return "url(#silver)"
+      }else if (d.profit === -1){
+        return "url(#stone)"
       }
     })
     .style("stroke","black")
+    .style("stroke-width", 2)
+
+    this.block.append("text")
+    .attr("class","blockLabel")
+    .attr("transform", d => {
+      return `translate(${100 + d.row*50 + 100*d.col + (3 - this.mine.length)*50}, ${125 + 100*d.row})`
+    })
+    .attr("id",function(d){
+      return `blockLabel:${d.row}-${d.col}`
+    })
+    .attr("dx", "3.2em")
+    .attr("dy", "1em")
+    .style("fill", d => {
+      if (d.profit > 0) return "green"
+      else return "red"
+    })
+    .text((d) => {
+      debugger
+      return this.blockLabelList[this.findIndexFromRowCol(d.row,d.col)-1]})
+    .style("font-weight", 600)
+    .style("font-size", 24)
+
 
     let circleSelector = this.svg.selectAll(".circleSelector")
     .data(this.blockSelectors)
@@ -1515,18 +1073,226 @@ class Mine {
     .attr("class","circleSelector")
 
     circleSelector.append("circle")
-    .attr("id",function(d){
-      return `circleSelector:${d.id}`
-    })
-    .attr("cx",function(d){
-      return 100+d.id*100
-    })
-    .attr("cy",100)
+    .attr("id",function(d){return `circleSelector:${d.id}`})
+    .attr("cx",function(d){return 300+d.id*100})
+    .attr("cy", 50)
     .attr("r",20)
     .attr("fill",function(d){
-      // debugger
-      return d.color
+      return `url(#${d.texture})`
     })
+
+    circleSelector.filter(d => d.id === 1)
+    .style("stroke", "red")
+    .style("stroke-width", 3);
+
+    circleSelector.append("text")
+    .attr("class","selectorLabel")
+    .attr("transform", d => {
+      return `translate(${200+d.id*100}, ${75})`
+    })
+    .attr("id",function(d){
+      return `selectorLabel:${d.id}`
+    })
+    .attr("dx", "3.2em")
+    .attr("dy", "1em")
+    .style("fill", d => {
+      if (d.profit > 0) return "green";
+      else return "red";
+    })
+    .text((d) => {
+      if (d.profit > 0){
+        return `+$${d.profit}k`
+      }else{
+        return `-$${-1 * d.profit}k`
+      }
+    })
+    .style("font-weight", 600)
+    .style("font-size", 24)
+    .style("stroke-width",0)
+
+    circleSelector.append("text")
+    .attr("class","selectorLabel")
+    .attr("transform", d => {
+      return `translate(${215+d.id*100}, ${0})`
+    })
+    .attr("id",function(d){
+      return `selectorLabel:${d.id}`
+    })
+    .attr("dx", "3.2em")
+    .attr("dy", "1em")
+    .style("fill", d => `url(#${d.texture})`)
+    .text((d) => {
+      if (d.profit === 5){
+        return "Gold"
+      }else if (d.profit === 2){
+        return "Silver"
+      }else if (d.profit === -1){
+        return "Stone"
+      }else if (d.profit === -3){
+        return "Rust"
+      }
+    })
+    .style("font-weight", 600)
+    .style("font-size", 20)
+    .style("stroke-width",0)
+
+    circleSelector.filter(d => d.profit === 5)
+    .append("text")
+    .attr("class","selectorLabel")
+    .attr("transform", d => {
+      return `translate(${-50}, ${25})`
+    })
+    .attr("id",function(d){
+      return `selector-instructions`
+    })
+    .attr("dx", "3.2em")
+    .attr("dy", "1em")
+    .style("fill", d => "white")
+    .text((d) => {
+      return "You can customize the mine by"
+    })
+    .style("font-weight", 400)
+    .style("font-size", 18)
+    .style("stroke-width",0)
+
+    circleSelector.filter(d => d.profit === 5)
+    .append("text")
+    .attr("class","selectorLabel")
+    .attr("transform", d => {
+      return `translate(${-50}, ${50})`
+    })
+    .attr("id",function(d){
+      return `selector-instructions`
+    })
+    .attr("dx", "3.2em")
+    .attr("dy", "1em")
+    .style("fill", d => "white")
+    .text((d) => {
+      return "clicking a button to the right and"
+    })
+    .style("font-weight", 400)
+    .style("font-size", 18)
+    .style("stroke-width",0)
+
+    circleSelector.filter(d => d.profit === 5)
+    .append("text")
+    .attr("class","selectorLabel")
+    .attr("transform", d => {
+      return `translate(${-50}, ${75})`
+    })
+    .attr("id",function(d){
+      return `selector-instructions`
+    })
+    .attr("dx", "3.2em")
+    .attr("dy", "1em")
+    .style("fill", d => "white")
+    .text((d) => {
+      return "selecting specific blocks below"
+    })
+    .style("font-weight", 400)
+    .style("font-size", 18)
+    .style("stroke-width",0)
+
+    let invisiNodes = [
+      {x: 650, y: 0},
+      {x: 650, y: 50}
+    ]
+    //
+
+    let invisiNode = this.svg.selectAll('.node')
+    .data(invisiNodes)
+    .enter().append('circle')
+    .attr('class', 'node');
+
+    let links = [
+      { source: 0, target: 1 }
+    ];
+
+    invisiNode.attr('r', 0)
+       .attr('cx', function(d) { return d.x; })
+       .attr('cy', function(d) { return d.y; });
+
+    let link = this.svg.append('g').selectAll('.link')
+    .data(links)
+    .enter().append("line")
+    .attr('class', 'link')
+    .style("stroke","white")
+    .style("stroke-width", 3)
+    .attr("marker-end","url(#arrowheadMine)")
+    //
+
+    link.attr('x1', 650)
+       .attr('y1', 125)
+       .attr('x2', 650)
+       .attr('y2', 400);
+
+   defs.append('marker')
+       .attr({'id':'arrowheadMine',
+              'viewBox':'-0 -5 10 10',
+              'refX':0,
+              'refY':0,
+              //'markerUnits':'strokeWidth',
+              'orient':'auto',
+              'markerWidth':10,
+              'markerHeight':10,
+              'xoverflow':'visible'})
+       .append('svg:path')
+           .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+           .attr('fill', '#fff')
+
+           let edgepaths = this.svg.selectAll(".edgepath")
+           .data(links)
+           .enter()
+           .append('path')
+           .attr({'d': function(d) {
+             //
+           return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+           'class':'edgepathMine',
+           'fill-opacity':0,
+           'stroke-opacity':0,
+           'fill':'blue',
+           'stroke':'red',
+           'id':function(d,i) {return `edgepath:depth`}})
+           .style("pointer-events", "none");
+           //
+           let edgelabels = this.svg.selectAll(".edgelabelMine")
+           .data(links)
+           .enter()
+           .append('text')
+           .style("pointer-events", "none")
+           .attr({'class':'edgelabelMine',
+           'id':function(d){return 'edgelabelMine'},
+           'dx':80,
+           'dy':-7,
+           'font-size':20,
+           'fill':'#ccc'});
+           //
+           //
+           edgelabels.append('textPath')
+           .attr('xlink:href',function(d,i) {
+             //
+             return `#edgepath:depth`})
+             // return '#edgepath'+i})
+             .style("pointer-events", "none")
+             .text("heeey");
+
+    // .attr("fill",function(d){return d.color})
+    //
+    // this.svg.append("circle")
+    // .attr("id","addRow")
+    // .attr("cx", 250)
+    // .attr("cy", 35)
+    // .attr("r", 25)
+    // .attr("fill", "green")
+    //
+    // this.svg.append("circle")
+    // .attr("id","removeRow")
+    // .attr("cx", 310)
+    // .attr("cy", 35)
+    // .attr("r", 25)
+    // .attr("fill", "red")
+
+    this.addListeners();
   }
 
   presentGraph(){
@@ -1534,57 +1300,210 @@ class Mine {
     // this.graph.addListeners();
   }
 
+  clearMine(){
+    d3.select(".mineSvg").selectAll("*")
+    // .filter(d => {
+    //   return typeof d !== "undefined" && d.type !== "selector"
+    // })
+    .remove();
+    this.blocks = [];
+  }
+
+  addRow(){
+    if (this.mine.length < 4) {
+      let index = this.numBlocks;
+      let newRow = [];
+      for (let i = 0; i <= this.mine[0].length; i++){
+        newRow.push({profit: -1, idx: index});
+        index++;
+        this.numBlocks++;
+      }
+      this.mine.unshift(newRow);
+      this.updateNodeLayers(this.mine);
+      this.clearMine();
+      this.drawMine();
+      this.graph.clearGraph();
+      this.graph.generateMatrixFromMine(this);
+      this.graph.populateLinks();
+      this.presentGraph();
+    }
+  }
+
+  removeRow(){
+    if (this.mine.length > 1){
+      this.mine.shift();
+      this.findNumBlocks();
+      this.updateNodeLayers(this.mine);
+      this.clearMine();
+      this.drawMine();
+      // debugger
+      this.graph.clearGraph();
+      this.graph.generateMatrixFromMine(this);
+      this.graph.populateLinks();
+      this.presentGraph();
+    }
+  }
+
+  findPadding(row){
+    let topLength = 3 + this.mine.length - 1;
+    let sum = 0;
+    let rowCp = row;
+    while (rowCp > 0){
+      sum += topLength;
+      topLength--;
+      rowCp--;
+    }
+    return sum;
+  }
+
+  findBlockIndex(row,col){
+    return col + this.findPadding(row);
+  }
+
+  reset(){
+    this.mine =  [
+      [
+        {profit: -3, idx: 7},
+        {profit: -1, idx: 8},
+        {profit: -3, idx: 9},
+        {profit: -3, idx: 10},
+        {profit: -3, idx: 11},
+        // {profit: -2, idx: 14}
+      ],
+      [
+        {profit: -1, idx: 3},
+        {profit: 2, idx: 4},
+        {profit: 5, idx: 5},
+        {profit: 5, idx: 6},
+        // {profit: -1, idx: 9}
+      ],
+      [
+        {profit: 5, idx: 0},
+        {profit: 5, idx: 1},
+        {profit: 2, idx: 2},
+        // {profit: 1, idx: 4}
+      ]
+    ];
+    this.updateNodeLayers(this.mine);
+    this.clearMine();
+    this.drawMine();
+    this.graph.clearGraph();
+    this.graph.generateMatrixFromMine(this);
+    this.graph.populateLinks();
+    this.presentGraph();
+  }
+
+  rectify(row,col){
+    return `rect:${row}-${col}`
+  }
+
+  findAboves(id){
+    const result = [id];
+    const splat = id.split(new RegExp('(:|-)'));
+    const row = Number(splat[2]);
+    const col = Number(splat[4]);
+    // debugger
+    let count = 0;
+    while (count < row){
+      count++;
+      for (let k = 0; k <= count; k++){
+        result.push(this.rectify(row-count,k+col));
+      }
+    }
+    return result;
+  }
+
   addListeners(){
+    const html = document.getElementById("body");
+
+    document.getElementById("add-row").onclick = () => this.addRow();
+    document.getElementById("remove-row").onclick = () => this.removeRow();
+    document.getElementById("reset-graph-and-mine").onclick = () => this.reset();
+    document.getElementById("select-guess").onclick = () => {
+      // html.classList.toggle('active');
+      this.guessing = true
+    };
+
     this.blocks.forEach(block => {
       if (block.profit !== null){
         let tmpBlock = document.getElementById(`rect:${block.row}-${block.col}`)
 
 
         // let tmpColor;
-        // tmpBlock.addEventListener("mouseover",(e) => {
-        //   this.svg.selectAll("rect").filter(function(d){
-        //     return `rect:${d.row}-${d.col}` === e.currentTarget.id;
-        //   })
-        //   .attr("fill","white");
-        //   this.svg.selectAll(".block").attr("fill","white");
-        // })
-        //
-        // tmpBlock.addEventListener("mouseout",(e) => {
-        //   this.svg.selectAll("rect").filter(function(d){
-        //     return `rect:${d.row}-${d.col}` === e.currentTarget.id;
-        //   })
-        //   .attr("fill","white");
-        //   this.svg.selectAll(".block").attr("fill",function(d){
-        //     debugger
-        //   });
-        // })
-
-        tmpBlock.addEventListener("click", e => {
-          // debugger
-          this.svg.selectAll("rect").filter((d) => {
+        tmpBlock.addEventListener("mouseover",(e) => {
+          if (this.guessing){
+            const aboves = this.findAboves(e.currentTarget.id)
             // debugger
-            if (`rect:${d.row}-${d.col}` === e.currentTarget.id){
-              // this.mine[d.row][d.col].color = this.currentBlockType.color;
-              const updatableObj = this.blocks.filter(block => (block.col === d.col && block.row === d.row))[0];
-              updatableObj.profit = this.currentBlockType.profit;
-              updatableObj.color = this.currentBlockType.color
-              debugger
-              return true;
-            }
-          })
-          .attr("fill",this.currentBlockType.color);
+            this.svg.selectAll("rect").filter(function(d){
+              return aboves.includes(`rect:${d.row}-${d.col}`);
+            })
+            .style("stroke", "red")
+            .style("stroke-width", 2)
+          }
+        })
+        //
+        tmpBlock.addEventListener("mouseout",(e) => {
+          if (this.guessing){
+            const aboves = this.findAboves(e.currentTarget.id)
+            this.svg.selectAll("rect").filter(function(d){
+              return aboves.includes(`rect:${d.row}-${d.col}`);
+            })
+            .style("stroke", d => d.border)
+            .style("stroke-width", 2)
+          }
+        })
 
+        // this.guessing = false;
+        // html.classList.toggle('active');
+        tmpBlock.addEventListener("click", e => {
+          if (this.guessing){
+            const aboves = this.findAboves(e.currentTarget.id)
+            this.svg.selectAll("rect").filter((d) => {
+              // debugger
+              return aboves.includes(`rect:${d.row}-${d.col}`);
+            })
+            .style("stroke", d => {
+              this.blocks[this.findBlockIndex(d.row,d.col)].border = "red";
+              return "red"
+            })
+            .style("stroke-width", 2)
+          }else{
+            let updatableObj;
+            this.svg.selectAll("rect").filter((d) => {
+              // debugger
+              if (typeof d !== "undefined" && `rect:${d.row}-${d.col}` === e.currentTarget.id){
+                // this.mine[d.row][d.col].color = this.currentBlockType.color;
+                updatableObj = this.blocks.filter(block => (block.col === d.col && block.row === d.row))[0];
+                updatableObj.profit = this.currentBlockType.profit;
+                updatableObj.color = this.currentBlockType.color
 
-          let indices = e.currentTarget.id.split(":")[1].split("-");
-          // debugger
-          this.mine[Number(indices[0])][Number(indices[1])].profit = this.currentBlockType.profit;
-          debugger
+                return true;
+              }
+            })
+            .attr("fill",`url(#${this.currentBlockType.texture})`)
+            // .style("stroke", "red")
+            // .style("stroke-width", 2);
 
+            // debugger
+            this.svg.selectAll(".blockLabel")
+            .filter(d => {return (d.row === updatableObj.row && d.col === updatableObj.col)})
+            .style("fill",d => {
+              if (this.currentBlockType.profit > 0){
+                return "green"
+              }else{
+                return "red"
+              }
+            })
+            let indices = e.currentTarget.id.split(":")[1].split("-");
+            // debugger
+            this.mine[Number(indices[0])][Number(indices[1])].profit = this.currentBlockType.profit;
 
-          this.graph.clearGraph();
-          this.graph.generateMatrixFromMine(this);
-          this.graph.populateLinks();
-          this.presentGraph();
+            this.graph.clearGraph();
+            this.graph.generateMatrixFromMine(this);
+            this.graph.populateLinks();
+            this.presentGraph();
+          }
+
 
           // debugger
           // this.svg.selectAll(".block").attr("fill","white");
@@ -1592,12 +1511,17 @@ class Mine {
         //
       }
       })
+
       this.blockSelectors.forEach(selector => {
         // debugger
         let tmpSelector = document.getElementById(`circleSelector:${selector.id}`)
         tmpSelector.addEventListener("click", e => {
-          // debugger
+          if (this.guessing) {
+            this.guessing = false;
+            // debugger
 
+            // html.classList.toggle('active');
+          }
           this.svg.selectAll(".circleSelector")
           .style("stroke-width", "3")
           .style("stroke",(d) => {
@@ -1613,8 +1537,50 @@ class Mine {
           })
           // debugger
         }
-    )}
-  )}
+      )}
+    )
+
+    // let addRow = document.getElementById("addRow");
+    // addRow.addEventListener("click", e => {
+    //   debugger
+    //   if (this.mine.length < 4) {
+    //     let index = this.numBlocks;
+    //     let newRow = [];
+    //     for (let i = 0; i <= this.mine[0].length; i++){
+    //       newRow.push({profit: -1, idx: index});
+    //       index++;
+    //       this.numBlocks++;
+    //     }
+    //     this.mine.unshift(newRow);
+    //     this.updateNodeLayers(this.mine);
+    //     this.clearMine();
+    //     debugger
+    //     this.drawMine();
+    //     this.graph.clearGraph();
+    //     this.graph.generateMatrixFromMine(this);
+    //     this.graph.populateLinks();
+    //     this.presentGraph();
+    //   }
+    // })
+    //
+    // let removeRow = document.getElementById("removeRow");
+    // removeRow.addEventListener("click", e =>{
+    //   debugger
+    //   if (this.mine.length > 1){
+    //     this.mine.shift();
+    //     this.findNumBlocks();
+    //     this.updateNodeLayers(this.mine);
+    //     this.clearMine();
+    //     this.drawMine();
+    //     debugger
+    //     this.graph.clearGraph();
+    //     this.graph.generateMatrixFromMine(this);
+    //     this.graph.populateLinks();
+    //     this.presentGraph();
+    //   }
+    // })
+
+  }
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Mine);
@@ -1843,7 +1809,7 @@ document.addEventListener("DOMContentLoaded", () => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 class Solver {
-  constructor(stepping, playback, count, matrix, parent, max_flow, svgGraph, mineSvg){
+  constructor(stepping, playback, count, matrix, parent, max_flow, svgGraph, mineSvg, mine){
     // debugger
     this.stepping = stepping;
     this.playback = playback;
@@ -1854,73 +1820,88 @@ class Solver {
     this.svgGraph = svgGraph;
     this.infCapacity = 1000000;
     this.setup();
-    this.animationInterval = 500;
+    this.animationInterval = 300;
     this.mineSvg = mineSvg;
+    this.mine = mine;
     this.solution;
+    this.colorMap = {"#8B4513": "rust", "#FFD700": "gold", "#c8c8c8": "silver", "#bdad9c": "stone"};
   }
 
   setup(){
-    this.svgGraph.append("rect")
-    .attr("id","step")
-    .attr("x", 10)
-    .attr("y", 10)
-    .attr("width", 50)
-    .attr("height", 50)
-    .attr("fill", "orange")
-
-    this.svgGraph.append("rect")
-    .attr("id","play")
-    .attr("x", 70)
-    .attr("y", 10)
-    .attr("width", 50)
-    .attr("height", 50)
-    .attr("fill", "green")
-
-    this.svgGraph.append("rect")
-    .attr("id","pause")
-    .attr("x", 130)
-    .attr("y", 10)
-    .attr("width", 50)
-    .attr("height", 50)
-    .attr("fill", "red")
-
-    this.svgGraph.append("rect")
-    .attr("id","mine")
-    .attr("x", 190)
-    .attr("y", 10)
-    .attr("width", 50)
-    .attr("height", 50)
-    .attr("fill", "white")
+    // this.svgGraph.append("rect")
+    // .attr("id","step")
+    // .attr("x", 10)
+    // .attr("y", 10)
+    // .attr("width", 50)
+    // .attr("height", 50)
+    // .attr("fill", "orange")
+    //
+    // this.svgGraph.append("rect")
+    // .attr("id","play")
+    // .attr("x", 70)
+    // .attr("y", 10)
+    // .attr("width", 50)
+    // .attr("height", 50)
+    // .attr("fill", "green")
+    //
+    // this.svgGraph.append("rect")
+    // .attr("id","pause")
+    // .attr("x", 130)
+    // .attr("y", 10)
+    // .attr("width", 50)
+    // .attr("height", 50)
+    // .attr("fill", "red")
+    //
+    // this.svgGraph.append("rect")
+    // .attr("id","mine")
+    // .attr("x", 190)
+    // .attr("y", 10)
+    // .attr("width", 50)
+    // .attr("height", 50)
+    // .attr("fill", "white")
 
     this.addListeners();
   }
 
   addListeners(){
-    let playButton = document.getElementById("play");
-    playButton.addEventListener("click", e => {
+    // let playButton = document.getElementById("play");
+    // playButton.addEventListener("click", e => {
+    //   if (!this.stepping) {
+    //     // this.solver.step();
+    //     this.step();
+    //   }
+    //   this.playback = true;
+    // })
+    //
+    // let stepButton = document.getElementById("step");
+    // stepButton.addEventListener("click", e => {
+    //   this.step();
+    // })
+    //
+    // let pauseButton = document.getElementById("pause");
+    // pauseButton.addEventListener("click", e => {
+    //   // this.solver.playback = false;
+    //   this.playback = false;
+    // })
+    //
+    // let mineButton = document.getElementById("mine");
+    // mineButton.addEventListener("click", e => {
+    //   // this.solver.playback = false;
+    //   this.mineIt();
+    // })
+
+    document.getElementById("step-animation").onclick = () => this.step();
+    document.getElementById("play-animation").onclick = () => {
+      debugger
       if (!this.stepping) {
         // this.solver.step();
         this.step();
       }
       this.playback = true;
-    })
+    }
+    document.getElementById("stop-animation").onclick = () => this.playback = false;
+    document.getElementById("mine-animation").onclick = () => this.mineIt();
 
-    let stepButton = document.getElementById("step");
-    stepButton.addEventListener("click", e => {
-      this.step();
-    })
-
-    let pauseButton = document.getElementById("pause");
-    pauseButton.addEventListener("click", e => {
-      // this.solver.playback = false;
-      this.playback = false;
-    })
-
-    let mineButton = document.getElementById("mine");
-    mineButton.addEventListener("click", e => {
-      // this.solver.playback = false;
-      this.mineIt();
-    })
   }
 
   mineIt(){
@@ -1929,13 +1910,42 @@ class Solver {
     .duration(1000)
     .style("stroke", "black")
     .attr("fill", d => {
-      return d.color
+      return `url(#${this.colorMap[d.color]})`
     })
 
-    const solutionBlocks = this.solution.slice(1);
+    const solutionBlocks = this.solution.slice(1).reverse();
     let count = 1;
 
-    // setTimeout(())
+
+    solutionBlocks.forEach(block => {
+      setTimeout(()=>{
+        this.mineBlock(block);
+      }, this.animationInterval * (count/2))
+      count++;
+    })
+  }
+
+  mineBlock(block){
+    this.mineSvg.selectAll("rect")
+    .filter(d => {
+      debugger
+      return this.findIndexFromRowCol(d.row,d.col) === block
+    })
+    .transition()
+    .duration(1000)
+    .style("stroke","none")
+    .attr("fill","none")
+
+    this.mineSvg.selectAll("text")
+    .filter(d => {
+      debugger
+      return this.findIndexFromRowCol(d.row,d.col) === block
+    })
+    .transition()
+    .duration(1000)
+    .style("fill","none")
+
+
   }
 
   BFS(graph, s, t, parent){
@@ -1965,11 +1975,12 @@ class Solver {
   }
 
   step(){
+    debugger
     this.stepping = true;
     this.count = 0;
     let graph = this.matrix;
     let source = 0;
-    let sink = 13;
+    let sink = this.findIndexFromRowCol(0,this.mine[0].length-1)+1;
     let parent = this.parent;
     if (this.BFS(graph, source, sink, parent).pathToSink){
       let path_flow = 91;
@@ -2200,10 +2211,14 @@ class Solver {
       //   }
       // })
       .style("stroke", (d) => {
-        if (solution.includes(this.findIndexFromRowCol(d.row,d.col))){
-          return "black"
+        if (d.border === "red"){
+          return "red"
         }else{
-          return "white"
+          if (solution.includes(this.findIndexFromRowCol(d.row,d.col))){
+            return "black"
+          }else{
+            return "white"
+          }
         }
       })
       .attr("fill", d => {
@@ -2259,7 +2274,16 @@ class Solver {
   }
 
   findIndexFromRowCol(row,col){
-    return 4 * (2-row) + (col + 1)
+    let minRow = this.mine[this.mine.length-1].length;
+    let height = this.mine.length;
+    let offset;
+    if (row === this.mine.length - 1){
+      offset = 0;
+    }else{
+      let n = height-2-row;
+      offset = (n*(n+1))/2;
+    }
+    return minRow*(height-1-row) + col + 1 + offset;
   }
 
   animatePath(path, count, type,graph) {
@@ -2288,6 +2312,9 @@ class Solver {
           }else if (type === "augment"){
             return "#039ab5"
           }
+        })
+        .style("stroke-width", d => {
+          return (d.capacity > 5 ? 4 : 8);
         })
 
         this.mineSvg.selectAll("rect").filter((d) => {
@@ -2329,13 +2356,25 @@ class Solver {
         .transition()
         .duration(this.animationInterval)
         .style("stroke", (d)=>{
+          debugger
           if (d.capacity === this.infCapacity){
             return "#444444"
           }else if (d.target.label === "t"){
-            return "#8b4516"
+            if (d.capacity === 3){
+              return `url(#rust)`;
+            }else{
+              return `url(#stone)`;
+            }
           }else if ( d.source.label === "s"){
-            return "#ffd724"
+            if (d.capacity === 5){
+              return `url(#gold)`;
+            }else{
+              return `url(#silver)`;
+            }
           }
+        })
+        .style("stroke-width", d => {
+          return (d.capacity > 5 ? 4 : 8);
         })
 
         this.mineSvg.selectAll("rect")
@@ -2346,7 +2385,8 @@ class Solver {
         .transition()
         .duration(this.animationInterval)
         .attr("fill", (d)=>{
-          return d.color;
+          debugger
+          return `url(#${this.colorMap[d.color]})`;
         })
       }, this.animationInterval*count)
     }
