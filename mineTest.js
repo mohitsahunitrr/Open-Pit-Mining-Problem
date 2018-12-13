@@ -57,7 +57,8 @@ class Mine {
         // {profit: 1, idx: 4}
       ]
     ];
-    this.guessing = false;
+    this.currentProfit = 0;
+    this.guessing = true;
     this.blockLabelList = "abcdefghijklmnopqruvwxyz"
     this.nodeLayers;
     this.updateNodeLayers(this.mine);
@@ -66,6 +67,7 @@ class Mine {
     this.findNumBlocks();
     this.block;
     this.svg = d3.select(".svgMineBody").append("svg").attr("class","mineSvg").attr("width", 700).attr("height", window.innerHeight-450)
+    this.svgKeys = d3.select(".svgKeys").append("svg").attr("class","keysSvg").attr("width", 700).attr("height", 170)
     this.blocks = [];
     this.blockSelectors = [
       {id: 0, color: "#FFD700", profit: 5, type: "selector", texture: "gold"},
@@ -201,13 +203,27 @@ class Mine {
     .enter().append("g")
     .attr("class","block")
 
+    this.svg.append("text")
+    .attr("class","profit")
+    .attr("transform", d => {
+      return `translate(${120}, ${60})`
+    })
+    .attr("id", `profit`)
+    .attr("dx", "3.2em")
+    .attr("dy", "1em")
+    .style("fill", d => "white")
+    .text((d) => `Your Current Profit: $${this.currentProfit}k`)
+    .style("font-weight", 600)
+    .style("font-size", 24)
+    .style("stroke-width",0)
+
     // debugger
     this.block.append("rect")
     .attr("x", (d) => {
       return 100 + d.row*50 + 102*d.col + (3 - this.mine.length)*50
     })
     .attr("y", function(d){
-      return 125 + 102*d.row
+      return 198 + 102*d.row
     })
     .attr("id",function(d){
       return `rect:${d.row}-${d.col}`
@@ -234,7 +250,7 @@ class Mine {
     this.block.append("text")
     .attr("class","blockLabel")
     .attr("transform", d => {
-      return `translate(${100 + d.row*50 + 100*d.col + (3 - this.mine.length)*50}, ${125 + 100*d.row})`
+      return `translate(${100 + d.row*50 + 100*d.col + (3 - this.mine.length)*50}, ${200 + 100*d.row})`
     })
     .attr("id",function(d){
       return `blockLabel:${d.row}-${d.col}`
@@ -252,28 +268,28 @@ class Mine {
     .style("font-size", 24)
 
 
-    let circleSelector = this.svg.selectAll(".circleSelector")
+    let circleSelector = this.svgKeys.selectAll(".circleSelector")
     .data(this.blockSelectors)
     .enter().append("g")
     .attr("class","circleSelector")
 
     circleSelector.append("circle")
     .attr("id",function(d){return `circleSelector:${d.id}`})
-    .attr("cx",function(d){return 300+d.id*100})
+    .attr("cx",function(d){return 250+d.id*100})
     .attr("cy", 50)
     .attr("r",20)
     .attr("fill",function(d){
       return `url(#${d.texture})`
     })
 
-    circleSelector.filter(d => d.id === 1)
-    .style("stroke", "red")
-    .style("stroke-width", 3);
+    // circleSelector.filter(d => d.id === 1)
+    // .style("stroke", "red")
+    // .style("stroke-width", 3);
 
     circleSelector.append("text")
     .attr("class","selectorLabel")
     .attr("transform", d => {
-      return `translate(${200+d.id*100}, ${75})`
+      return `translate(${150+d.id*100}, ${75})`
     })
     .attr("id",function(d){
       return `selectorLabel:${d.id}`
@@ -298,7 +314,7 @@ class Mine {
     circleSelector.append("text")
     .attr("class","selectorLabel")
     .attr("transform", d => {
-      return `translate(${215+d.id*100}, ${0})`
+      return `translate(${165+d.id*100}, ${0})`
     })
     .attr("id",function(d){
       return `selectorLabel:${d.id}`
@@ -325,7 +341,7 @@ class Mine {
     .append("text")
     .attr("class","selectorLabel")
     .attr("transform", d => {
-      return `translate(${-50}, ${25})`
+      return `translate(${50}, ${25})`
     })
     .attr("id",function(d){
       return `selector-instructions`
@@ -334,132 +350,132 @@ class Mine {
     .attr("dy", "1em")
     .style("fill", d => "white")
     .text((d) => {
-      return "You can customize the mine by"
+      return "Key:"
     })
     .style("font-weight", 400)
-    .style("font-size", 18)
+    .style("font-size", 24)
     .style("stroke-width",0)
 
-    circleSelector.filter(d => d.profit === 5)
-    .append("text")
-    .attr("class","selectorLabel")
-    .attr("transform", d => {
-      return `translate(${-50}, ${50})`
-    })
-    .attr("id",function(d){
-      return `selector-instructions`
-    })
-    .attr("dx", "3.2em")
-    .attr("dy", "1em")
-    .style("fill", d => "white")
-    .text((d) => {
-      return "clicking a button to the right and"
-    })
-    .style("font-weight", 400)
-    .style("font-size", 18)
-    .style("stroke-width",0)
-
-    circleSelector.filter(d => d.profit === 5)
-    .append("text")
-    .attr("class","selectorLabel")
-    .attr("transform", d => {
-      return `translate(${-50}, ${75})`
-    })
-    .attr("id",function(d){
-      return `selector-instructions`
-    })
-    .attr("dx", "3.2em")
-    .attr("dy", "1em")
-    .style("fill", d => "white")
-    .text((d) => {
-      return "selecting specific blocks below"
-    })
-    .style("font-weight", 400)
-    .style("font-size", 18)
-    .style("stroke-width",0)
-
-    let invisiNodes = [
-      {x: 650, y: 0},
-      {x: 650, y: 50}
-    ]
+    // circleSelector.filter(d => d.profit === 5)
+    // .append("text")
+    // .attr("class","selectorLabel")
+    // .attr("transform", d => {
+    //   return `translate(${-50}, ${50})`
+    // })
+    // .attr("id",function(d){
+    //   return `selector-instructions`
+    // })
+    // .attr("dx", "3.2em")
+    // .attr("dy", "1em")
+    // .style("fill", d => "white")
+    // .text((d) => {
+    //   return "clicking a button to the right and"
+    // })
+    // .style("font-weight", 400)
+    // .style("font-size", 18)
+    // .style("stroke-width",0)
     //
+    // circleSelector.filter(d => d.profit === 5)
+    // .append("text")
+    // .attr("class","selectorLabel")
+    // .attr("transform", d => {
+    //   return `translate(${-50}, ${75})`
+    // })
+    // .attr("id",function(d){
+    //   return `selector-instructions`
+    // })
+    // .attr("dx", "3.2em")
+    // .attr("dy", "1em")
+    // .style("fill", d => "white")
+    // .text((d) => {
+    //   return "selecting specific blocks below"
+    // })
+    // .style("font-weight", 400)
+    // .style("font-size", 18)
+    // .style("stroke-width",0)
 
-    let invisiNode = this.svg.selectAll('.node')
-    .data(invisiNodes)
-    .enter().append('circle')
-    .attr('class', 'node');
-
-    let links = [
-      { source: 0, target: 1 }
-    ];
-
-    invisiNode.attr('r', 0)
-       .attr('cx', function(d) { return d.x; })
-       .attr('cy', function(d) { return d.y; });
-
-    let link = this.svg.append('g').selectAll('.link')
-    .data(links)
-    .enter().append("line")
-    .attr('class', 'link')
-    .style("stroke","white")
-    .style("stroke-width", 3)
-    .attr("marker-end","url(#arrowheadMine)")
-    //
-
-    link.attr('x1', 650)
-       .attr('y1', 125)
-       .attr('x2', 650)
-       .attr('y2', 400);
-
-   defs.append('marker')
-       .attr({'id':'arrowheadMine',
-              'viewBox':'-0 -5 10 10',
-              'refX':0,
-              'refY':0,
-              //'markerUnits':'strokeWidth',
-              'orient':'auto',
-              'markerWidth':10,
-              'markerHeight':10,
-              'xoverflow':'visible'})
-       .append('svg:path')
-           .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
-           .attr('fill', '#fff')
-
-           let edgepaths = this.svg.selectAll(".edgepath")
-           .data(links)
-           .enter()
-           .append('path')
-           .attr({'d': function(d) {
-             //
-           return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
-           'class':'edgepathMine',
-           'fill-opacity':0,
-           'stroke-opacity':0,
-           'fill':'blue',
-           'stroke':'red',
-           'id':function(d,i) {return `edgepath:depth`}})
-           .style("pointer-events", "none");
-           //
-           let edgelabels = this.svg.selectAll(".edgelabelMine")
-           .data(links)
-           .enter()
-           .append('text')
-           .style("pointer-events", "none")
-           .attr({'class':'edgelabelMine',
-           'id':function(d){return 'edgelabelMine'},
-           'dx':80,
-           'dy':-7,
-           'font-size':20,
-           'fill':'#ccc'});
-           //
-           //
-           edgelabels.append('textPath')
-           .attr('xlink:href',function(d,i) {
-             //
-             return `#edgepath:depth`})
-             // return '#edgepath'+i})
-             .style("pointer-events", "none")
-             .text("heeey");
+   //  let invisiNodes = [
+   //    {x: 650, y: 0},
+   //    {x: 650, y: 50}
+   //  ]
+   //  //
+   //
+   //  let invisiNode = this.svg.selectAll('.node')
+   //  .data(invisiNodes)
+   //  .enter().append('circle')
+   //  .attr('class', 'node');
+   //
+   //  let links = [
+   //    { source: 0, target: 1 }
+   //  ];
+   //
+   //  invisiNode.attr('r', 0)
+   //     .attr('cx', function(d) { return d.x; })
+   //     .attr('cy', function(d) { return d.y; });
+   //
+   //  let link = this.svg.append('g').selectAll('.link')
+   //  .data(links)
+   //  .enter().append("line")
+   //  .attr('class', 'link')
+   //  .style("stroke","white")
+   //  .style("stroke-width", 3)
+   //  .attr("marker-end","url(#arrowheadMine)")
+   //  //
+   //
+   //  link.attr('x1', 650)
+   //     .attr('y1', 125)
+   //     .attr('x2', 650)
+   //     .attr('y2', 400);
+   //
+   // defs.append('marker')
+   //     .attr({'id':'arrowheadMine',
+   //            'viewBox':'-0 -5 10 10',
+   //            'refX':0,
+   //            'refY':0,
+   //            //'markerUnits':'strokeWidth',
+   //            'orient':'auto',
+   //            'markerWidth':10,
+   //            'markerHeight':10,
+   //            'xoverflow':'visible'})
+   //     .append('svg:path')
+   //         .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+   //         .attr('fill', '#fff')
+   //
+   //         let edgepaths = this.svg.selectAll(".edgepath")
+   //         .data(links)
+   //         .enter()
+   //         .append('path')
+   //         .attr({'d': function(d) {
+   //           //
+   //         return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+   //         'class':'edgepathMine',
+   //         'fill-opacity':0,
+   //         'stroke-opacity':0,
+   //         'fill':'blue',
+   //         'stroke':'red',
+   //         'id':function(d,i) {return `edgepath:depth`}})
+   //         .style("pointer-events", "none");
+   //         //
+   //         let edgelabels = this.svg.selectAll(".edgelabelMine")
+   //         .data(links)
+   //         .enter()
+   //         .append('text')
+   //         .style("pointer-events", "none")
+   //         .attr({'class':'edgelabelMine',
+   //         'id':function(d){return 'edgelabelMine'},
+   //         'dx':80,
+   //         'dy':-7,
+   //         'font-size':20,
+   //         'fill':'#ccc'});
+   //         //
+   //         //
+   //         edgelabels.append('textPath')
+   //         .attr('xlink:href',function(d,i) {
+   //           //
+   //           return `#edgepath:depth`})
+   //           // return '#edgepath'+i})
+   //           .style("pointer-events", "none")
+   //           .text("heeey");
 
     // .attr("fill",function(d){return d.color})
     //
@@ -601,13 +617,13 @@ class Mine {
   addListeners(){
     const html = document.getElementById("body");
 
-    document.getElementById("add-row").onclick = () => this.addRow();
-    document.getElementById("remove-row").onclick = () => this.removeRow();
-    document.getElementById("reset-graph-and-mine").onclick = () => this.reset();
-    document.getElementById("select-guess").onclick = () => {
-      // html.classList.toggle('active');
-      this.guessing = true
-    };
+    // document.getElementById("add-row").onclick = () => this.addRow();
+    // document.getElementById("remove-row").onclick = () => this.removeRow();
+    // document.getElementById("reset-graph-and-mine").onclick = () => this.reset();
+    // document.getElementById("select-guess").onclick = () => {
+    //   // html.classList.toggle('active');
+    //   this.guessing = true
+    // };
 
     this.blocks.forEach(block => {
       if (block.profit !== null){
@@ -645,13 +661,21 @@ class Mine {
             const aboves = this.findAboves(e.currentTarget.id)
             this.svg.selectAll("rect").filter((d) => {
               // debugger
-              return aboves.includes(`rect:${d.row}-${d.col}`);
+              if (aboves.includes(`rect:${d.row}-${d.col}`)){
+                debugger
+                if (d.border === "black") this.currentProfit = this.currentProfit + d.profit;
+                return true;
+              }else{
+                return false;
+              }
             })
             .style("stroke", d => {
               this.blocks[this.findBlockIndex(d.row,d.col)].border = "red";
               return "red"
             })
             .style("stroke-width", 2)
+
+            this.svg.selectAll(".profit").transition().duration(1).text(`Your Current Profit: $${this.currentProfit}k`)
           }else{
             let updatableObj;
             this.svg.selectAll("rect").filter((d) => {
@@ -697,33 +721,33 @@ class Mine {
       }
       })
 
-      this.blockSelectors.forEach(selector => {
-        // debugger
-        let tmpSelector = document.getElementById(`circleSelector:${selector.id}`)
-        tmpSelector.addEventListener("click", e => {
-          if (this.guessing) {
-            this.guessing = false;
-            // debugger
-
-            // html.classList.toggle('active');
-          }
-          this.svg.selectAll(".circleSelector")
-          .style("stroke-width", "3")
-          .style("stroke",(d) => {
-            if (e.currentTarget.id.split(":")[1] === `${d.id}`){
-              this.currentBlockType = d;
-              // debugger
-              return "red";
-            }else{
-              // debugger
-              return "none";
-            }
-            // debugger
-          })
-          // debugger
-        }
-      )}
-    )
+      // this.blockSelectors.forEach(selector => {
+      //   // debugger
+      //   let tmpSelector = document.getElementById(`circleSelector:${selector.id}`)
+      //   tmpSelector.addEventListener("click", e => {
+      //     if (this.guessing) {
+      //       this.guessing = false;
+      //       // debugger
+      //
+      //       // html.classList.toggle('active');
+      //     }
+      //     this.svg.selectAll(".circleSelector")
+      //     .style("stroke-width", "3")
+      //     .style("stroke",(d) => {
+      //       if (e.currentTarget.id.split(":")[1] === `${d.id}`){
+      //         this.currentBlockType = d;
+      //         // debugger
+      //         return "red";
+      //       }else{
+      //         // debugger
+      //         return "none";
+      //       }
+      //       // debugger
+      //     })
+      //     // debugger
+      //   }
+      // )}
+    // )
 
     // let addRow = document.getElementById("addRow");
     // addRow.addEventListener("click", e => {
