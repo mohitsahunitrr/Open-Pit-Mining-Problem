@@ -958,11 +958,11 @@ class Mine {
     this.blockLabelList = "abcdefghijklmnopqruvwxyz"
     this.nodeLayers;
     this.updateNodeLayers(this.mine);
-    // 
+    //
     this.numBlocks = 0;
     this.findNumBlocks();
     this.block;
-    this.svg = d3.select(".svgMineBody").append("svg").attr("class","mineSvg").attr("width", 700).attr("height", window.innerHeight-450)
+    this.svg = d3.select(".svgMineBody").append("svg").attr("class","mineSvg").attr("width", 700).attr("height", 503)
     this.svgKeys = d3.select(".svgKeys").append("svg").attr("class","keysSvg").attr("width", 700).attr("height", 110)
     this.blocks = [];
     this.blockSelectors = [
@@ -1013,10 +1013,10 @@ class Mine {
         last--;
       }
       result.push(rowEnds);
-      // 
+      //
     })
     this.nodeLayers = result;
-    // 
+    //
   }
 
   findIndexFromRowCol(row,col){
@@ -1086,7 +1086,7 @@ class Mine {
             return obj.profit === block.profit
           })[0].color
         }
-        // 
+        //
         this.blocks.push({profit: block.profit, row: i, col: j, color, type: block, border: "black"})
       })
     })
@@ -1141,7 +1141,7 @@ class Mine {
     .style("font-size", 24)
     .style("stroke-width",0)
 
-    // 
+    //
     this.block.append("rect")
     .attr("x", (d) => {
       return 100 + d.row*50 + 102*d.col + (3 - this.mine.length)*50
@@ -1186,7 +1186,7 @@ class Mine {
       else return "red"
     })
     .text((d) => {
-      
+
       return this.blockLabelList[this.findIndexFromRowCol(d.row,d.col)-1]})
     .style("font-weight", 600)
     .style("font-size", 24)
@@ -1461,7 +1461,7 @@ class Mine {
       this.updateNodeLayers(this.mine);
       this.clearMine();
       this.drawMine();
-      // 
+      //
       this.graph.clearGraph();
       this.graph.generateMatrixFromMine(this);
       this.graph.populateLinks();
@@ -1508,7 +1508,7 @@ class Mine {
     const splat = id.split(new RegExp('(:|-)'));
     const row = Number(splat[2]);
     const col = Number(splat[4]);
-    // 
+    //
     let count = 0;
     while (count < row){
       count++;
@@ -1520,7 +1520,7 @@ class Mine {
   }
 
   clearGuess(){
-    
+
     this.svg.selectAll("rect").style("stroke", d => {
       this.blocks[this.findBlockIndex(d.row,d.col)].border = "black";
       return "black"
@@ -1534,7 +1534,7 @@ class Mine {
   undoGuess(){
     if (this.guessStack.length > 0){
       const last = this.guessStack.pop();
-      
+
 
       this.svg.selectAll("rect").filter(d => last.includes(`rect:${d.row}-${d.col}`))
       .style("stroke", d => {
@@ -1584,7 +1584,7 @@ class Mine {
         tmpBlock.addEventListener("mouseover",(e) => {
           if (this.guessing){
             const aboves = this.findAboves(e.currentTarget.id)
-            // 
+            //
             this.svg.selectAll("rect").filter(function(d){
               return aboves.includes(`rect:${d.row}-${d.col}`);
             })
@@ -1612,9 +1612,9 @@ class Mine {
             const tmpArr = [];
             let tmpProfit = 0
             this.svg.selectAll("rect").filter((d) => {
-              // 
+              //
               if (aboves.includes(`rect:${d.row}-${d.col}`)){
-                // 
+                //
                 if (d.border === "black") {
                   this.currentProfit = this.currentProfit + d.profit
                   tmpProfit = tmpProfit + d.profit;
@@ -1630,7 +1630,7 @@ class Mine {
               return "#f442aa"
             })
             .style("stroke-width", 2)
-            
+
             this.guessStack.push(tmpArr);
             this.profitStack.push(tmpProfit);
             this.graph.passProfit(tmpProfit);
@@ -1638,7 +1638,7 @@ class Mine {
           }else{
             let updatableObj;
             this.svg.selectAll("rect").filter((d) => {
-              // 
+              //
               if (typeof d !== "undefined" && `rect:${d.row}-${d.col}` === e.currentTarget.id){
                 // this.mine[d.row][d.col].color = this.currentBlockType.color;
                 updatableObj = this.blocks.filter(block => (block.col === d.col && block.row === d.row))[0];
@@ -1652,7 +1652,7 @@ class Mine {
             // .style("stroke", "red")
             // .style("stroke-width", 2);
 
-            // 
+            //
             this.svg.selectAll(".blockLabel")
             .filter(d => {return (d.row === updatableObj.row && d.col === updatableObj.col)})
             .style("fill",d => {
@@ -1663,7 +1663,7 @@ class Mine {
               }
             })
             let indices = e.currentTarget.id.split(":")[1].split("-");
-            // 
+            //
             this.mine[Number(indices[0])][Number(indices[1])].profit = this.currentBlockType.profit;
 
             this.graph.clearGraph();
@@ -1673,7 +1673,7 @@ class Mine {
           }
 
 
-          // 
+          //
           // this.svg.selectAll(".block").attr("fill","white");
         })
         //
@@ -1681,12 +1681,12 @@ class Mine {
       })
 
       // this.blockSelectors.forEach(selector => {
-      //   // 
+      //   //
       //   let tmpSelector = document.getElementById(`circleSelector:${selector.id}`)
       //   tmpSelector.addEventListener("click", e => {
       //     if (this.guessing) {
       //       this.guessing = false;
-      //       // 
+      //       //
       //
       //       // html.classList.toggle('active');
       //     }
@@ -1695,22 +1695,22 @@ class Mine {
       //     .style("stroke",(d) => {
       //       if (e.currentTarget.id.split(":")[1] === `${d.id}`){
       //         this.currentBlockType = d;
-      //         // 
+      //         //
       //         return "red";
       //       }else{
-      //         // 
+      //         //
       //         return "none";
       //       }
-      //       // 
+      //       //
       //     })
-      //     // 
+      //     //
       //   }
       // )}
     // )
 
     // let addRow = document.getElementById("addRow");
     // addRow.addEventListener("click", e => {
-    //   
+    //
     //   if (this.mine.length < 4) {
     //     let index = this.numBlocks;
     //     let newRow = [];
@@ -1722,7 +1722,7 @@ class Mine {
     //     this.mine.unshift(newRow);
     //     this.updateNodeLayers(this.mine);
     //     this.clearMine();
-    //     
+    //
     //     this.drawMine();
     //     this.graph.clearGraph();
     //     this.graph.generateMatrixFromMine(this);
@@ -1733,14 +1733,14 @@ class Mine {
     //
     // let removeRow = document.getElementById("removeRow");
     // removeRow.addEventListener("click", e =>{
-    //   
+    //
     //   if (this.mine.length > 1){
     //     this.mine.shift();
     //     this.findNumBlocks();
     //     this.updateNodeLayers(this.mine);
     //     this.clearMine();
     //     this.drawMine();
-    //     
+    //
     //     this.graph.clearGraph();
     //     this.graph.generateMatrixFromMine(this);
     //     this.graph.populateLinks();
@@ -1768,188 +1768,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mineTest_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./mineTest.js */ "./mineTest.js");
 /* harmony import */ var _graph_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./graph.js */ "./graph.js");
 /* harmony import */ var _graph2_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./graph2.js */ "./graph2.js");
-// // const Vertex = require("./vertex.js");
-// const Vertex = require("./vertex.js");
-//
-// // import Vertex from "./vertex.js";
-//
-// document.addEventListener("DOMContentLoaded", () => {
-//   const canvas = document.getElementById("canvas");
-//   const ctx = canvas.getContext("2d");
-//
-//   // const Vertex = function(x,y,r){
-//   //   this.x = x,
-//   //   this.y = y,
-//   //   this.r = r
-//   // }
-//   //
-//   // Vertex.prototype.render = function(ctx){
-//   //   ctx.beginPath();
-//   //   ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
-//   //   ctx.fillStyle = "red";
-//   //   ctx.fill();
-//   // }
-//
-//   const Edge = function(v1, v2){
-//     this.v1 = v1;
-//     this.v2 = v2;
-//   }
-//
-//   Edge.prototype.render = function(ctx){
-//     ctx.beginPath();
-//     ctx.moveTo(this.v1.x,this.v1.y);
-//     ctx.lineTo(this.v2.x,this.v2.y);
-//     ctx.lineWidth = 10;
-//     ctx.strokeStyle = "purple";
-//     ctx.stroke();
-//   }
-//
-//   const EdgeArrow = function(v1,v2){
-//
-//   }
-//
-//   const matrix = [
-//     [0,0,1,1,1,0],
-//     [0,0,0,1,1,1],
-//     [0,0,0,0,0,0],
-//     [0,0,0,0,0,0],
-//     [0,0,0,0,0,0],
-//     [0,0,0,0,0,0]
-//   ]
-//
-//   const vertices = [
-//     new Vertex(300,300,20),
-//     new Vertex(500,300,20),
-//
-//     new Vertex(100,100,20),
-//     new Vertex(300,100,20),
-//     new Vertex(500,100,20),
-//     new Vertex(700,100,20)
-//   ]
-//   const edges = [];
-//
-//   const generateEdgesFromMatrix = function(matrix){
-//     matrix.forEach((row, i) => {
-//       row.forEach((el, j) => {
-//         if (el > 0){
-//           edges.push(new Edge(vertices[i],vertices[j]));
-//         }
-//       })
-//     })
-//   }
-//
-//   generateEdgesFromMatrix(matrix);
-//
-//
-//   // const edges = [
-//   //   new Edge(vertices[4],vertices[0]),
-//   //   new Edge(vertices[4],vertices[1]),
-//   //   new Edge(vertices[4],vertices[2]),
-//   //   new Edge(vertices[5],vertices[1]),
-//   //   new Edge(vertices[5],vertices[2]),
-//   //   new Edge(vertices[5],vertices[3])
-//   // ]
-//
-//   edges.forEach((edge) => {
-//     edge.render(ctx);
-//   })
-//
-//   vertices.forEach((vertex) => {
-//     vertex.render(ctx);
-//   })
-//
-//   // v1.render(ctx);
-//   // v2.render(ctx);
-//   // v3.render(ctx);
-//   // v4.render(ctx);
-//   // v5.render(ctx);
-//   // v6.render(ctx);
-//
-// });
-
-// document.addEventListener("DOMContentLoaded", () => {
-//
-//   var svg = d3.select("svg"),
-//       width = +svg.attr("width"),
-//       height = +svg.attr("height");
-//
-//
-//               var simulation = d3.forceSimulation()
-//                   .force("link", d3.forceLink().id(function(d) { return d.id; }))
-//                   //.force("charge", d3.forceManyBody().strength(-200))
-//               		.force('charge', d3.forceManyBody()
-//                     .strength(-1000)
-//                   )
-//               // 		.force('collide', d3.forceCollide()
-//               //       .radius(d => 40)
-//               //       .iterations(2)
-//               //     )
-//                   .force("center", d3.forceCenter(width / 2, height / 2));
-//               const graph = {
-//                 "nodes": [
-//                   {"id": "1", "group": 1},
-//                   {"id": "2", "group": 2},
-//                 ],
-//                 "links": [
-//                   {"source": "1", "target": "2", "value": 1},
-//                 ]
-//               }
-//
-//
-//               function run(graph) {
-//
-//                 graph.links.forEach(function(d){
-//               //     d.source = d.source_id;
-//               //     d.target = d.target_id;
-//                 });
-//                 var link = svg.append("g")
-//                               .style("stroke", "#aaa")
-//                               .selectAll("line")
-//                               .data(graph.links)
-//                               .enter().append("line");
-//                 var node = svg.append("g")
-//                           .attr("class", "nodes")
-//                 .selectAll("circle")
-//                           .data(graph.nodes)
-//                 .enter().append("circle")
-//                         .attr("r", 2)
-//
-//
-//                 var label = svg.append("g")
-//                     .attr("class", "labels")
-//                     .selectAll("text")
-//                     .data(graph.nodes)
-//                     .enter().append("text")
-//                       .attr("class", "label")
-//                       .text(function(d) { return d.id; });
-//                 simulation
-//                     .nodes(graph.nodes)
-//                     .on("tick", ticked);
-//                 simulation.force("link")
-//                     .links(graph.links);
-//                 function ticked() {
-//                   link
-//                       .attr("x1", function(d) { return d.source.x; })
-//                       .attr("y1", function(d) { return d.source.y; })
-//                       .attr("x2", function(d) { return d.target.x; })
-//                       .attr("y2", function(d) { return d.target.y; });
-//                   node
-//                        .attr("r", 16)
-//                        .style("fill", "#efefef")
-//                        .style("stroke", "#424242")
-//                        .style("stroke-width", "1px")
-//                        .attr("cx", function (d) { return d.x+5; })
-//                        .attr("cy", function(d) { return d.y-3; });
-//                 }
-//               }
-//
-//
-//               run(graph)
-//
-//
-// });
-
-
 const draw = __webpack_require__(/*! ./test3.js */ "./test3.js");
 
 
