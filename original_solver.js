@@ -1,6 +1,6 @@
 class Solver {
   constructor(stepping, playback, count, matrix, parent, max_flow, svgGraph, mineSvg){
-    // debugger
+    // 
     this.stepping = stepping;
     this.playback = playback;
     this.count = count;
@@ -103,7 +103,7 @@ class Solver {
   mineBlock(block){
     this.mineSvg.selectAll("rect")
     .filter(d => {
-      debugger
+      
       return this.findIndexFromRowCol(d.row,d.col) === block
     })
     .transition()
@@ -113,7 +113,7 @@ class Solver {
   }
 
   BFS(graph, s, t, parent){
-    // debugger
+    // 
     let visited = [];
     for (let i = 0; i < 5; i++){
       visited.push(false);
@@ -150,7 +150,7 @@ class Solver {
       let s = sink;
       let path = [s];
       while (s != source){
-        // debugger
+        // 
         path_flow = Math.min(path_flow, graph[parent[s]][s]);
         s = parent[s];
         path.unshift(s);
@@ -186,7 +186,7 @@ class Solver {
       setTimeout(() => {
         this.stepping = false;
         if (this.playback){
-          // debugger
+          // 
           this.count = this.count + 1;
             this.step()
         }
@@ -220,9 +220,9 @@ class Solver {
       }this.solution = solution;
 
       this.highlightSolution(solution,0,solutionEdges);
-      // debugger
+      // 
     }
-    // debugger
+    // 
   }
 
 
@@ -307,7 +307,7 @@ class Solver {
       .text((d) => {
         //
         let cap;
-        // debugger
+        // 
         if (d.capacity === this.infCapacity){
           cap = `∞`
         }
@@ -438,14 +438,14 @@ class Solver {
 
   animatePath(path, count, type,graph) {
     for (let i = 0; i < path.length - 1; i++){
-      // debugger
+      // 
       setTimeout(() => {
         this.svgGraph.selectAll(".link")
         .filter(function(d){
           if (type === "search"){
             return d.source.index === path[i] && d.target.index === path[i+1]
           }else{
-            debugger
+            
             if (d.source.index === path[i+1] && d.target.index === path[i]){
               //
               this.updateCapacities(d.source.index, d.target.index,count,graph);
@@ -467,13 +467,13 @@ class Solver {
         this.mineSvg.selectAll("rect").filter((d) => {
           if (type === "search"){
             if (this.findIndexFromRowCol(d.row,d.col) === path[i+1]){
-              debugger
+              
               return true;
             }
           }else{
-            debugger
+            
             if (this.findIndexFromRowCol(d.row,d.col) === path[i]){
-              debugger
+              
               return true;
             }
           }
@@ -514,7 +514,7 @@ class Solver {
 
         this.mineSvg.selectAll("rect")
         .filter((d) => {
-          debugger
+          
           return this.findIndexFromRowCol(d.row,d.col) === path[i+1]
         })
         .transition()

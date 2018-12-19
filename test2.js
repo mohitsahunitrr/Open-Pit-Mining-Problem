@@ -19,7 +19,7 @@ const draw2 = function() {
    .append("svg:circle")
    // .filter(function(d) { return d.id === 1})
    .attr("cx", function(d) {
-     // debugger
+     // 
      return d.x;
    })
    .attr("cy", function(d) { return d.y; })
@@ -38,7 +38,7 @@ const draw2 = function() {
 
   vis.selectAll("circle")
   .filter(function(d) {
-     // debugger
+     // 
      return d.id === 1
    })
    .transition()

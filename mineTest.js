@@ -137,7 +137,7 @@ class Mine {
     this.blockLabelList = "abcdefghijklmnopqruvwxyz"
     this.nodeLayers;
     this.updateNodeLayers(this.mine);
-    // debugger
+    // 
     this.numBlocks = 0;
     this.findNumBlocks();
     this.block;
@@ -192,10 +192,10 @@ class Mine {
         last--;
       }
       result.push(rowEnds);
-      // debugger
+      // 
     })
     this.nodeLayers = result;
-    // debugger
+    // 
   }
 
   findIndexFromRowCol(row,col){
@@ -265,7 +265,7 @@ class Mine {
             return obj.profit === block.profit
           })[0].color
         }
-        // debugger
+        // 
         this.blocks.push({profit: block.profit, row: i, col: j, color, type: block, border: "black"})
       })
     })
@@ -320,7 +320,7 @@ class Mine {
     .style("font-size", 24)
     .style("stroke-width",0)
 
-    // debugger
+    // 
     this.block.append("rect")
     .attr("x", (d) => {
       return 100 + d.row*50 + 102*d.col + (3 - this.mine.length)*50
@@ -365,7 +365,7 @@ class Mine {
       else return "red"
     })
     .text((d) => {
-      debugger
+      
       return this.blockLabelList[this.findIndexFromRowCol(d.row,d.col)-1]})
     .style("font-weight", 600)
     .style("font-size", 24)
@@ -640,7 +640,7 @@ class Mine {
       this.updateNodeLayers(this.mine);
       this.clearMine();
       this.drawMine();
-      // debugger
+      // 
       this.graph.clearGraph();
       this.graph.generateMatrixFromMine(this);
       this.graph.populateLinks();
@@ -687,7 +687,7 @@ class Mine {
     const splat = id.split(new RegExp('(:|-)'));
     const row = Number(splat[2]);
     const col = Number(splat[4]);
-    // debugger
+    // 
     let count = 0;
     while (count < row){
       count++;
@@ -699,7 +699,7 @@ class Mine {
   }
 
   clearGuess(){
-    debugger
+    
     this.svg.selectAll("rect").style("stroke", d => {
       this.blocks[this.findBlockIndex(d.row,d.col)].border = "black";
       return "black"
@@ -713,7 +713,7 @@ class Mine {
   undoGuess(){
     if (this.guessStack.length > 0){
       const last = this.guessStack.pop();
-      debugger
+      
 
       this.svg.selectAll("rect").filter(d => last.includes(`rect:${d.row}-${d.col}`))
       .style("stroke", d => {
@@ -763,7 +763,7 @@ class Mine {
         tmpBlock.addEventListener("mouseover",(e) => {
           if (this.guessing){
             const aboves = this.findAboves(e.currentTarget.id)
-            // debugger
+            // 
             this.svg.selectAll("rect").filter(function(d){
               return aboves.includes(`rect:${d.row}-${d.col}`);
             })
@@ -791,9 +791,9 @@ class Mine {
             const tmpArr = [];
             let tmpProfit = 0
             this.svg.selectAll("rect").filter((d) => {
-              // debugger
+              // 
               if (aboves.includes(`rect:${d.row}-${d.col}`)){
-                // debugger
+                // 
                 if (d.border === "black") {
                   this.currentProfit = this.currentProfit + d.profit
                   tmpProfit = tmpProfit + d.profit;
@@ -809,7 +809,7 @@ class Mine {
               return "#f442aa"
             })
             .style("stroke-width", 2)
-            debugger
+            
             this.guessStack.push(tmpArr);
             this.profitStack.push(tmpProfit);
             this.graph.passProfit(tmpProfit);
@@ -817,7 +817,7 @@ class Mine {
           }else{
             let updatableObj;
             this.svg.selectAll("rect").filter((d) => {
-              // debugger
+              // 
               if (typeof d !== "undefined" && `rect:${d.row}-${d.col}` === e.currentTarget.id){
                 // this.mine[d.row][d.col].color = this.currentBlockType.color;
                 updatableObj = this.blocks.filter(block => (block.col === d.col && block.row === d.row))[0];
@@ -831,7 +831,7 @@ class Mine {
             // .style("stroke", "red")
             // .style("stroke-width", 2);
 
-            // debugger
+            // 
             this.svg.selectAll(".blockLabel")
             .filter(d => {return (d.row === updatableObj.row && d.col === updatableObj.col)})
             .style("fill",d => {
@@ -842,7 +842,7 @@ class Mine {
               }
             })
             let indices = e.currentTarget.id.split(":")[1].split("-");
-            // debugger
+            // 
             this.mine[Number(indices[0])][Number(indices[1])].profit = this.currentBlockType.profit;
 
             this.graph.clearGraph();
@@ -852,7 +852,7 @@ class Mine {
           }
 
 
-          // debugger
+          // 
           // this.svg.selectAll(".block").attr("fill","white");
         })
         //
@@ -860,12 +860,12 @@ class Mine {
       })
 
       // this.blockSelectors.forEach(selector => {
-      //   // debugger
+      //   // 
       //   let tmpSelector = document.getElementById(`circleSelector:${selector.id}`)
       //   tmpSelector.addEventListener("click", e => {
       //     if (this.guessing) {
       //       this.guessing = false;
-      //       // debugger
+      //       // 
       //
       //       // html.classList.toggle('active');
       //     }
@@ -874,22 +874,22 @@ class Mine {
       //     .style("stroke",(d) => {
       //       if (e.currentTarget.id.split(":")[1] === `${d.id}`){
       //         this.currentBlockType = d;
-      //         // debugger
+      //         // 
       //         return "red";
       //       }else{
-      //         // debugger
+      //         // 
       //         return "none";
       //       }
-      //       // debugger
+      //       // 
       //     })
-      //     // debugger
+      //     // 
       //   }
       // )}
     // )
 
     // let addRow = document.getElementById("addRow");
     // addRow.addEventListener("click", e => {
-    //   debugger
+    //   
     //   if (this.mine.length < 4) {
     //     let index = this.numBlocks;
     //     let newRow = [];
@@ -901,7 +901,7 @@ class Mine {
     //     this.mine.unshift(newRow);
     //     this.updateNodeLayers(this.mine);
     //     this.clearMine();
-    //     debugger
+    //     
     //     this.drawMine();
     //     this.graph.clearGraph();
     //     this.graph.generateMatrixFromMine(this);
@@ -912,14 +912,14 @@ class Mine {
     //
     // let removeRow = document.getElementById("removeRow");
     // removeRow.addEventListener("click", e =>{
-    //   debugger
+    //   
     //   if (this.mine.length > 1){
     //     this.mine.shift();
     //     this.findNumBlocks();
     //     this.updateNodeLayers(this.mine);
     //     this.clearMine();
     //     this.drawMine();
-    //     debugger
+    //     
     //     this.graph.clearGraph();
     //     this.graph.generateMatrixFromMine(this);
     //     this.graph.populateLinks();

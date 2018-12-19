@@ -11,7 +11,7 @@ const BFS = (graph, s, t, parent) => {
 
   queue.push(s);
   visited[s] = true;
-  // debugger
+  // 
   while (queue.length > 0) {
     let currentVtx = queue.shift();
 
@@ -40,7 +40,7 @@ const EK = (graph, source, sink, animationInterval, svg) => {
 
 
   let max_flow = 0;
-  // debugger
+  // 
   while (BFS(graph, source, sink, parent).pathToSink) {
     let path_flow = 91;
     let s = sink;
@@ -50,10 +50,10 @@ const EK = (graph, source, sink, animationInterval, svg) => {
       s = parent[s];
       path.unshift(s);
     }
-    // debugger
+    // 
     animatePath(path, count, "search",svg);
     max_flow = max_flow + path_flow;
-    // debugger
+    // 
     count = count + (path.length - 1);
 
     let t = sink;
@@ -68,7 +68,7 @@ const EK = (graph, source, sink, animationInterval, svg) => {
     animatePath(augmentingPath, count, "augment",svg)
 
     count = count + (path.length - 1);
-    // debugger
+    // 
 
     resetBFSLinks(path, count,svg);
     count = count + 1;
@@ -102,7 +102,7 @@ const EK = (graph, source, sink, animationInterval, svg) => {
 function animatePath(path, count, type, svg) {
   for (let i = 0; i < path.length - 1; i++){
     setTimeout(function(){
-      debugger
+      
       svg.selectAll(".link")
       .filter(function(d){
         if (type === "search"){
@@ -122,7 +122,7 @@ function animatePath(path, count, type, svg) {
       })
     }, animationInterval*count)
     count = count + 1
-    // debugger
+    // 
   }
 
 }
@@ -132,7 +132,7 @@ function resetBFSLinks(path,count,svg){
     setTimeout(function(){
       svg.selectAll(".link")
       .filter(function(d){
-        // debugger
+        // 
         return d.source.index === path[i] && d.target.index === path[i+1]
       })
       .transition()

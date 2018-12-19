@@ -76,7 +76,7 @@ const BFS = (graph, s, t, parent) => {
 
   queue.push(s);
   visited[s] = true;
-  // debugger
+  // 
   while (queue.length > 0) {
     let currentVtx = queue.shift();
 
@@ -97,7 +97,7 @@ const EK = (graph, source, sink) => {
   let parent = [-1,-1,-1,-1];
 
   let max_flow = 0;
-  debugger
+  
   while (BFS(graph, source, sink, parent).pathToSink) {
     let path_flow = 91;
     let s = sink;

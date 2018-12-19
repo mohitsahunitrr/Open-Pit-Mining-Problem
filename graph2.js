@@ -164,15 +164,15 @@ class Graph {
         .nodes(d3.values(this.nodes))
         .links(this.links)
         .on("tick", () => {
-          // debugger
+          // 
           this.node.attr('cx', function(d) {
-            // debugger
+            // 
               return d.x;
             })
             .attr('cy', function(d) { return d.y; })
             .attr("transform", function(d) { return `translate(${d.x},${d.y})`; });
 
-      // debugger
+      // 
       this.link.attr('x1', function(d) { return d.source.x; })
           .attr('y1', function(d) { return d.source.y; })
           .attr('x2', function(d) { return d.target.x; })

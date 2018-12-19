@@ -126,7 +126,7 @@ class Graph {
     this.cont = true;
     this.playback = false;
     this.stepping = false;
-    // debugger
+    // 
     this.solver;// = new Solver();
     this.currentProfit;
   }
@@ -163,7 +163,7 @@ class Graph {
 
   generateMatrixFromMine(mineObj){
     this.mine = mineObj.mine;
-    debugger
+    
     const matrixSize = mineObj.numBlocks + 2;
     this.populateMatrix(matrixSize);
     // this.innerNodeCount = 0;
@@ -173,18 +173,18 @@ class Graph {
     this.mine.forEach((row,i) => {
       let tmpRow = row.slice();
       tmpRow.forEach((el, j) => {
-        // debugger
+        // 
         if (el.profit !== null){
           // this.innerNodeCount++;
           let newPos = this.findNodeNum(i,j,this.mine);
           if (el.profit > 0) this.matrix[0][newPos] = el.profit;
           else if (el.profit < 0) this.matrix[newPos][this.matrix.length - 1] = (-1*el.profit);
           let aboves = this.findBlocksAbove(i,j,this.mine);
-          // debugger
+          // 
           aboves.forEach(pos => {
             el;
             mineObj;
-            // debugger
+            // 
             let intRow = this.findNodeNum(i,j,this.mine);
             let intCol = this.findNodeNum(pos[0],pos[1],this.mine);
             this.matrix[intRow][intCol] = this.infCapacity;
@@ -216,26 +216,26 @@ class Graph {
     })
     this.nodes.unshift({label: "s", index: 0, profit: null, fixed: true, x: this.svgWidth/2, y: this.svgHeight-25});
     this.nodes.push({label: "t", index: matrixSize-1, profit: null, fixed: true, x: this.svgWidth/2, y: 50});
-    debugger;
+    ;
   }
 
   populateLinks(){
     let linkId = 0;
-    // debugger
+    // 
     this.matrix.forEach((row,i) => {
       row.forEach((el,j) => {
         if (el > 0){
-          // debugger
+          // 
           this.links.push({source: i, target: j, res: 0, capacity: el, id: linkId});
           linkId = linkId + 1;
         }
       })
     })
-    debugger
+    
   }
 
   passProfit(profit){
-    debugger
+    
     this.solver.currentProfit = this.solver.currentProfit + profit;
   }
 
@@ -245,17 +245,17 @@ class Graph {
     .nodes(d3.values(this.nodes))
     .links(this.links)
     .on("tick", () => {
-      // debugger
+      // 
       this.node.attr('cx', function(d) {
-        // debugger
+        // 
         return d.x;
       })
       .attr('cy', function(d) { return d.y; })
       .attr("transform", function(d) { return `translate(${d.x},${d.y})`; });
 
-      // debugger
+      // 
       this.link.attr('x1', function(d) {
-        // debugger
+        // 
         return d.source.x; })
       .attr('y1', function(d) { return d.source.y; })
       .attr('x2', function(d) { return d.target.x; })
@@ -331,7 +331,7 @@ class Graph {
       this.node.append("circle")
       .attr('r', 12)
       .attr("fill", function(d) {
-        // debugger
+        // 
         if (d.label === "s"){
           return "#ce9308"
         }else if (d.label === "t"){
@@ -413,7 +413,7 @@ class Graph {
               .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
               .attr('fill', '#ccc')
 
-    debugger
+    
     this.addListeners();
     this.solver = new _solver_js__WEBPACK_IMPORTED_MODULE_0__["default"](this.stepping, this.playback, this.count, this.matrix, this.parent, this.max_flow, this.svgGraph, this.mineSvg, this.mine, this.currentProfit);
   }
@@ -605,15 +605,15 @@ class Graph {
         .nodes(d3.values(this.nodes))
         .links(this.links)
         .on("tick", () => {
-          // debugger
+          // 
           this.node.attr('cx', function(d) {
-            // debugger
+            // 
               return d.x;
             })
             .attr('cy', function(d) { return d.y; })
             .attr("transform", function(d) { return `translate(${d.x},${d.y})`; });
 
-      // debugger
+      // 
       this.link.attr('x1', function(d) { return d.source.x; })
           .attr('y1', function(d) { return d.source.y; })
           .attr('x2', function(d) { return d.target.x; })
@@ -958,7 +958,7 @@ class Mine {
     this.blockLabelList = "abcdefghijklmnopqruvwxyz"
     this.nodeLayers;
     this.updateNodeLayers(this.mine);
-    // debugger
+    // 
     this.numBlocks = 0;
     this.findNumBlocks();
     this.block;
@@ -1013,10 +1013,10 @@ class Mine {
         last--;
       }
       result.push(rowEnds);
-      // debugger
+      // 
     })
     this.nodeLayers = result;
-    // debugger
+    // 
   }
 
   findIndexFromRowCol(row,col){
@@ -1086,7 +1086,7 @@ class Mine {
             return obj.profit === block.profit
           })[0].color
         }
-        // debugger
+        // 
         this.blocks.push({profit: block.profit, row: i, col: j, color, type: block, border: "black"})
       })
     })
@@ -1141,7 +1141,7 @@ class Mine {
     .style("font-size", 24)
     .style("stroke-width",0)
 
-    // debugger
+    // 
     this.block.append("rect")
     .attr("x", (d) => {
       return 100 + d.row*50 + 102*d.col + (3 - this.mine.length)*50
@@ -1186,7 +1186,7 @@ class Mine {
       else return "red"
     })
     .text((d) => {
-      debugger
+      
       return this.blockLabelList[this.findIndexFromRowCol(d.row,d.col)-1]})
     .style("font-weight", 600)
     .style("font-size", 24)
@@ -1461,7 +1461,7 @@ class Mine {
       this.updateNodeLayers(this.mine);
       this.clearMine();
       this.drawMine();
-      // debugger
+      // 
       this.graph.clearGraph();
       this.graph.generateMatrixFromMine(this);
       this.graph.populateLinks();
@@ -1508,7 +1508,7 @@ class Mine {
     const splat = id.split(new RegExp('(:|-)'));
     const row = Number(splat[2]);
     const col = Number(splat[4]);
-    // debugger
+    // 
     let count = 0;
     while (count < row){
       count++;
@@ -1520,7 +1520,7 @@ class Mine {
   }
 
   clearGuess(){
-    debugger
+    
     this.svg.selectAll("rect").style("stroke", d => {
       this.blocks[this.findBlockIndex(d.row,d.col)].border = "black";
       return "black"
@@ -1534,7 +1534,7 @@ class Mine {
   undoGuess(){
     if (this.guessStack.length > 0){
       const last = this.guessStack.pop();
-      debugger
+      
 
       this.svg.selectAll("rect").filter(d => last.includes(`rect:${d.row}-${d.col}`))
       .style("stroke", d => {
@@ -1584,7 +1584,7 @@ class Mine {
         tmpBlock.addEventListener("mouseover",(e) => {
           if (this.guessing){
             const aboves = this.findAboves(e.currentTarget.id)
-            // debugger
+            // 
             this.svg.selectAll("rect").filter(function(d){
               return aboves.includes(`rect:${d.row}-${d.col}`);
             })
@@ -1612,9 +1612,9 @@ class Mine {
             const tmpArr = [];
             let tmpProfit = 0
             this.svg.selectAll("rect").filter((d) => {
-              // debugger
+              // 
               if (aboves.includes(`rect:${d.row}-${d.col}`)){
-                // debugger
+                // 
                 if (d.border === "black") {
                   this.currentProfit = this.currentProfit + d.profit
                   tmpProfit = tmpProfit + d.profit;
@@ -1630,7 +1630,7 @@ class Mine {
               return "#f442aa"
             })
             .style("stroke-width", 2)
-            debugger
+            
             this.guessStack.push(tmpArr);
             this.profitStack.push(tmpProfit);
             this.graph.passProfit(tmpProfit);
@@ -1638,7 +1638,7 @@ class Mine {
           }else{
             let updatableObj;
             this.svg.selectAll("rect").filter((d) => {
-              // debugger
+              // 
               if (typeof d !== "undefined" && `rect:${d.row}-${d.col}` === e.currentTarget.id){
                 // this.mine[d.row][d.col].color = this.currentBlockType.color;
                 updatableObj = this.blocks.filter(block => (block.col === d.col && block.row === d.row))[0];
@@ -1652,7 +1652,7 @@ class Mine {
             // .style("stroke", "red")
             // .style("stroke-width", 2);
 
-            // debugger
+            // 
             this.svg.selectAll(".blockLabel")
             .filter(d => {return (d.row === updatableObj.row && d.col === updatableObj.col)})
             .style("fill",d => {
@@ -1663,7 +1663,7 @@ class Mine {
               }
             })
             let indices = e.currentTarget.id.split(":")[1].split("-");
-            // debugger
+            // 
             this.mine[Number(indices[0])][Number(indices[1])].profit = this.currentBlockType.profit;
 
             this.graph.clearGraph();
@@ -1673,7 +1673,7 @@ class Mine {
           }
 
 
-          // debugger
+          // 
           // this.svg.selectAll(".block").attr("fill","white");
         })
         //
@@ -1681,12 +1681,12 @@ class Mine {
       })
 
       // this.blockSelectors.forEach(selector => {
-      //   // debugger
+      //   // 
       //   let tmpSelector = document.getElementById(`circleSelector:${selector.id}`)
       //   tmpSelector.addEventListener("click", e => {
       //     if (this.guessing) {
       //       this.guessing = false;
-      //       // debugger
+      //       // 
       //
       //       // html.classList.toggle('active');
       //     }
@@ -1695,22 +1695,22 @@ class Mine {
       //     .style("stroke",(d) => {
       //       if (e.currentTarget.id.split(":")[1] === `${d.id}`){
       //         this.currentBlockType = d;
-      //         // debugger
+      //         // 
       //         return "red";
       //       }else{
-      //         // debugger
+      //         // 
       //         return "none";
       //       }
-      //       // debugger
+      //       // 
       //     })
-      //     // debugger
+      //     // 
       //   }
       // )}
     // )
 
     // let addRow = document.getElementById("addRow");
     // addRow.addEventListener("click", e => {
-    //   debugger
+    //   
     //   if (this.mine.length < 4) {
     //     let index = this.numBlocks;
     //     let newRow = [];
@@ -1722,7 +1722,7 @@ class Mine {
     //     this.mine.unshift(newRow);
     //     this.updateNodeLayers(this.mine);
     //     this.clearMine();
-    //     debugger
+    //     
     //     this.drawMine();
     //     this.graph.clearGraph();
     //     this.graph.generateMatrixFromMine(this);
@@ -1733,14 +1733,14 @@ class Mine {
     //
     // let removeRow = document.getElementById("removeRow");
     // removeRow.addEventListener("click", e =>{
-    //   debugger
+    //   
     //   if (this.mine.length > 1){
     //     this.mine.shift();
     //     this.findNumBlocks();
     //     this.updateNodeLayers(this.mine);
     //     this.clearMine();
     //     this.drawMine();
-    //     debugger
+    //     
     //     this.graph.clearGraph();
     //     this.graph.generateMatrixFromMine(this);
     //     this.graph.populateLinks();
@@ -1978,7 +1978,7 @@ document.addEventListener("DOMContentLoaded", () => {
 __webpack_require__.r(__webpack_exports__);
 class Solver {
   constructor(stepping, playback, count, matrix, parent, max_flow, svgGraph, mineSvg, mine, currentProfit){
-    // debugger
+    // 
     this.stepping = stepping;
     this.playback = playback;
     this.count = count;
@@ -2063,7 +2063,7 @@ class Solver {
 
     document.getElementById("step-animation").onclick = () => this.step();
     document.getElementById("play-animation").onclick = () => {
-      debugger
+      
       if (!this.stepping) {
         // this.solver.step();
         this.step();
@@ -2099,7 +2099,7 @@ class Solver {
   mineBlock(block){
     this.mineSvg.selectAll("rect")
     .filter(d => {
-      debugger
+      
       return this.findIndexFromRowCol(d.row,d.col) === block
     })
     .transition()
@@ -2109,7 +2109,7 @@ class Solver {
 
     this.mineSvg.selectAll("text")
     .filter(d => {
-      debugger
+      
       return this.findIndexFromRowCol(d.row,d.col) === block
     })
     .transition()
@@ -2120,7 +2120,7 @@ class Solver {
   }
 
   BFS(graph, s, t, parent){
-    // debugger
+    // 
     let visited = [];
     for (let i = 0; i < 5; i++){
       visited.push(false);
@@ -2146,7 +2146,7 @@ class Solver {
   }
 
   step(){
-    debugger
+    
     this.stepping = true;
     this.count = 0;
     let graph = this.matrix;
@@ -2158,7 +2158,7 @@ class Solver {
       let s = sink;
       let path = [s];
       while (s != source){
-        // debugger
+        // 
         path_flow = Math.min(path_flow, graph[parent[s]][s]);
         s = parent[s];
         path.unshift(s);
@@ -2194,7 +2194,7 @@ class Solver {
       setTimeout(() => {
         this.stepping = false;
         if (this.playback){
-          // debugger
+          // 
           this.count = this.count + 1;
             this.step()
         }
@@ -2240,7 +2240,7 @@ class Solver {
       .text(`You missed out on $${totalProfit - this.currentProfit}k!`)
 
       setTimeout(() => {
-        debugger
+        
         this.mineSvg.selectAll(".maxProfit").transition().duration(1000)
         .attr("transform", d => {
           return `translate(${120}, ${45})`
@@ -2248,7 +2248,7 @@ class Solver {
       }, 1000)
 
       setTimeout(() => {
-        debugger
+        
         this.mineSvg.selectAll(".profitSummary").transition().duration(1000)
         .attr("transform", d => {
           return `translate(${120}, ${70})`
@@ -2257,9 +2257,9 @@ class Solver {
 
 
       this.highlightSolution(solution,0,solutionEdges);
-      // debugger
+      // 
     }
-    // debugger
+    // 
   }
 
 
@@ -2344,7 +2344,7 @@ class Solver {
       .text((d) => {
         //
         let cap;
-        // debugger
+        // 
         if (d.capacity === this.infCapacity){
           cap = `∞`
         }
@@ -2488,14 +2488,14 @@ class Solver {
 
   animatePath(path, count, type,graph) {
     for (let i = 0; i < path.length - 1; i++){
-      // debugger
+      // 
       setTimeout(() => {
         this.svgGraph.selectAll(".link")
         .filter(function(d){
           if (type === "search"){
             return d.source.index === path[i] && d.target.index === path[i+1]
           }else{
-            debugger
+            
             if (d.source.index === path[i+1] && d.target.index === path[i]){
               //
               this.updateCapacities(d.source.index, d.target.index,count,graph);
@@ -2520,13 +2520,13 @@ class Solver {
         this.mineSvg.selectAll("rect").filter((d) => {
           if (type === "search"){
             if (this.findIndexFromRowCol(d.row,d.col) === path[i+1]){
-              debugger
+              
               return true;
             }
           }else{
-            debugger
+            
             if (this.findIndexFromRowCol(d.row,d.col) === path[i]){
-              debugger
+              
               return true;
             }
           }
@@ -2556,7 +2556,7 @@ class Solver {
         .transition()
         .duration(this.animationInterval)
         .style("stroke", (d)=>{
-          debugger
+          
           if (d.capacity === this.infCapacity){
             return "#444444"
           }else if (d.target.label === "t"){
@@ -2579,13 +2579,13 @@ class Solver {
 
         this.mineSvg.selectAll("rect")
         .filter((d) => {
-          debugger
+          
           return this.findIndexFromRowCol(d.row,d.col) === path[i+1]
         })
         .transition()
         .duration(this.animationInterval)
         .attr("fill", (d)=>{
-          debugger
+          
           return `url(#${this.colorMap[d.color]})`;
         })
       }, this.animationInterval*count)
@@ -2713,15 +2713,15 @@ const draw3 = function(){
       .nodes(d3.values(nodes))
       .links(links)
       .on("tick", () => {
-        debugger
+        
         node.attr('cx', function(d) {
-          debugger
+          
             return d.x;
           })
           .attr('cy', function(d) { return d.y; })
           .attr("transform", function(d) { return `translate(${d.x},${d.y})`; });
 
-    debugger
+    
     link.attr('x1', function(d) { return d.source.x; })
         .attr('y1', function(d) { return d.source.y; })
         .attr('x2', function(d) { return d.target.x; })
@@ -3003,7 +3003,7 @@ const draw3 = function(){
 
   const step = () => {
     stepping = true;
-    debugger
+    
     count = 0;
     graph = matrix;
     source = 0;
@@ -3048,7 +3048,7 @@ const draw3 = function(){
       setTimeout(() => {
         stepping = false;
         if (playback){
-          debugger
+          
           count = count + 1;
             step()
         }

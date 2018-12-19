@@ -28,7 +28,7 @@ class Graph {
     this.cont = true;
     this.playback = false;
     this.stepping = false;
-    // debugger
+    // 
     this.solver;// = new Solver();
   }
 
@@ -54,25 +54,25 @@ class Graph {
   }
 
   findBlocksAbove(i,j,mine){
-    // debugger
+    // 
     const result = [];
     if (i === 0) return result;
     if (j > 0) result.push([i-1,j-1]);
     result.push([i-1,j]);
     if (j < mine[0].length - 1) result.push([i-1,j+1]);
-    // debugger
+    // 
     return result;
   }
 
   findNodeNum(i,j,mine){
-    // debugger
+    // 
     // return 1 + (this.mineH - 1 - i)*this.mineW + j
     return 1 + mine[i][j].idx;
   }
 
   generateMatrixFromMine(mineObj){
     this.mine = mineObj.mine;
-    debugger
+    
     const matrixSize = mineObj.numBlocks + 2;
     this.populateMatrix(matrixSize);
     // this.innerNodeCount = 0;
@@ -82,26 +82,26 @@ class Graph {
     this.mine.forEach((row,i) => {
       let tmpRow = row.slice();
       tmpRow.forEach((el, j) => {
-        // debugger
+        // 
         if (el.profit !== null){
           // this.innerNodeCount++;
           let newPos = this.findNodeNum(i,j,this.mine);
           if (el.profit > 0) this.matrix[0][newPos] = el.profit;
           else if (el.profit < 0) this.matrix[newPos][this.matrix.length - 1] = (-1*el.profit);
           let aboves = this.findBlocksAbove(i,j,this.mine);
-          // debugger
+          // 
           aboves.forEach(pos => {
             el;
             mineObj;
-            // debugger
+            // 
             let intRow = this.findNodeNum(i,j,this.mine);
             let intCol = this.findNodeNum(pos[0],pos[1],this.mine);
             this.matrix[intRow][intCol] = this.infCapacity;
           })
-          // debugger
+          // 
           i;
           // nodeLayers;
-          // debugger
+          // 
           // if (nodeLayers[i][0] === el.idx){
           //   this.nodes.unshift({label: this.nodeLabelList[this.innerNodeCount-1], index: this.innerNodeCount, profit: el.profit, fixed: true, x: this.svgWidth/10, y: 100 + ((this.svgHeight-200)/(nodeLayers.length + 1)*(i+1))});
           // }else if (nodeLayers[i][1] === el.idx){
@@ -114,7 +114,7 @@ class Graph {
     })
     // this.nodes.unshift({label: "s", index: 0, profit: null, fixed: true, x: this.svgWidth/2, y: this.svgHeight-50});
     // this.nodes.push({label: "t", index: matrixSize-1, profit: null, fixed: true, x: this.svgWidth/2, y: 50});
-    // debugger
+    // 
     this.populateNodes(mineObj);
   }
 
@@ -146,22 +146,22 @@ class Graph {
     })
     this.nodes.unshift({label: "s", index: 0, profit: null, fixed: true, x: this.svgWidth/2, y: this.svgHeight-50});
     this.nodes.push({label: "t", index: matrixSize-1, profit: null, fixed: true, x: this.svgWidth/2, y: 50});
-    debugger;
+    ;
   }
 
   populateLinks(){
     let linkId = 0;
-    // debugger
+    // 
     this.matrix.forEach((row,i) => {
       row.forEach((el,j) => {
         if (el > 0){
-          // debugger
+          // 
           this.links.push({source: i, target: j, res: 0, capacity: el, id: linkId});
           linkId = linkId + 1;
         }
       })
     })
-    debugger
+    
   }
 
   // addListeners(){
@@ -225,17 +225,17 @@ class Graph {
     .nodes(d3.values(this.nodes))
     .links(this.links)
     .on("tick", () => {
-      // debugger
+      // 
       this.node.attr('cx', function(d) {
-        // debugger
+        // 
         return d.x;
       })
       .attr('cy', function(d) { return d.y; })
       .attr("transform", function(d) { return `translate(${d.x},${d.y})`; });
 
-      // debugger
+      // 
       this.link.attr('x1', function(d) {
-        // debugger
+        // 
         return d.source.x; })
       .attr('y1', function(d) { return d.source.y; })
       .attr('x2', function(d) { return d.target.x; })
@@ -298,7 +298,7 @@ class Graph {
       this.node.append("circle")
       .attr('r', 12)
       .attr("fill", function(d) {
-        // debugger
+        // 
         if (d.label === "s"){
           return "#ce9308"
         }else if (d.label === "t"){
@@ -380,10 +380,10 @@ class Graph {
                     .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
                     .attr('fill', '#ccc')
 
-    // debugger
+    // 
     // this.svgGraph.append("circle").attr("cx",100).attr("cy",100).attr("r",20).attr("fill","white");
-    // debugger
-     // debugger
+    // 
+     // 
 
     // this.link = this.svgGraph.append("g").selectAll('.link')
     //     .data(this.links)
@@ -409,9 +409,9 @@ class Graph {
     //     .nodes(d3.values(this.nodes))
     //     .links(this.links)
     //     .on("tick", () => {
-    //       debugger
+    //       
     //         this.node.attr('cx', function(d) {
-    //           debugger
+    //           
     //             return d.x;
     //           })
     //           .attr('cy', function(d) { return d.y; })
@@ -452,7 +452,7 @@ class Graph {
     //   .attr('class', 'node')
     //   // .attr("transform",transform);
     //   .call(this.force.drag);
-    //   // debugger
+    //   // 
     //
     //   this.node.append("circle")
     //   .attr('r', 12)
@@ -482,7 +482,7 @@ class Graph {
     //       .enter()
     //       .append('path')
     //       .attr({'d': function(d) {
-    //         // debugger
+    //         // 
     //         return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
     //              'class':'edgepath',
     //              'fill-opacity':0,
@@ -507,12 +507,12 @@ class Graph {
     //   //
     //        this.edgelabels.append('textPath')
     //            .attr('xlink:href',function(d,i) {
-    //              // debugger
+    //              // 
     //               return `#edgepath:${d.source.index}-${d.target.index}`})
     //              // return '#edgepath'+i})
     //            .style("pointer-events", "none")
     //            .text(function(d){
-    //              // debugger`${d.capacity}`
+    //              // `${d.capacity}`
     //              let cap;
     //              if (d.capacity === this.infCapacity){
     //                cap = `∞`
@@ -523,13 +523,13 @@ class Graph {
     //              return `${d.res}:${cap}`});
     //
 
-    debugger
+    
     this.solver = new Solver(this.stepping, this.playback, this.count, this.matrix, this.parent, this.max_flow, this.svgGraph, this.mineSvg);
   }
 
 
   BFS(graph, s, t, parent){
-    debugger
+    
     let visited = [];
     for (let i = 0; i < 5; i++){
       visited.push(false);
@@ -566,7 +566,7 @@ class Graph {
       let s = sink;
       let path = [s];
       while (s != source){
-        debugger
+        
         path_flow = Math.min(path_flow, graph[parent[s]][s]);
         s = parent[s];
         path.unshift(s);
@@ -602,7 +602,7 @@ class Graph {
       setTimeout(() => {
         this.stepping = false;
         if (this.playback){
-          debugger
+          
           this.count = this.count + 1;
             this.step()
         }
@@ -611,7 +611,7 @@ class Graph {
         // }
       }, this.count*this.animationInterval);
     }
-    debugger
+    
   }
 
 
@@ -696,7 +696,7 @@ class Graph {
       .text((d) => {
         //
         let cap;
-        debugger
+        
         if (d.capacity === this.infCapacity){
           cap = `∞`
         }
@@ -794,9 +794,9 @@ class Graph {
   }
 
   animatePath(path, count, type,graph) {
-    debugger
+    
     for (let i = 0; i < path.length - 1; i++){
-      debugger
+      
       setTimeout(() => {
         this.svgGraph.selectAll(".link")
         .filter(function(d){

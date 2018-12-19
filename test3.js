@@ -106,15 +106,15 @@ const draw3 = function(){
       .nodes(d3.values(nodes))
       .links(links)
       .on("tick", () => {
-        debugger
+        
         node.attr('cx', function(d) {
-          debugger
+          
             return d.x;
           })
           .attr('cy', function(d) { return d.y; })
           .attr("transform", function(d) { return `translate(${d.x},${d.y})`; });
 
-    debugger
+    
     link.attr('x1', function(d) { return d.source.x; })
         .attr('y1', function(d) { return d.source.y; })
         .attr('x2', function(d) { return d.target.x; })
@@ -396,7 +396,7 @@ const draw3 = function(){
 
   const step = () => {
     stepping = true;
-    debugger
+    
     count = 0;
     graph = matrix;
     source = 0;
@@ -441,7 +441,7 @@ const draw3 = function(){
       setTimeout(() => {
         stepping = false;
         if (playback){
-          debugger
+          
           count = count + 1;
             step()
         }

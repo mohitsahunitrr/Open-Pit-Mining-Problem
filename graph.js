@@ -28,7 +28,7 @@ class Graph {
     this.cont = true;
     this.playback = false;
     this.stepping = false;
-    // debugger
+    // 
     this.solver;// = new Solver();
     this.currentProfit;
   }
@@ -65,7 +65,7 @@ class Graph {
 
   generateMatrixFromMine(mineObj){
     this.mine = mineObj.mine;
-    debugger
+    
     const matrixSize = mineObj.numBlocks + 2;
     this.populateMatrix(matrixSize);
     // this.innerNodeCount = 0;
@@ -75,18 +75,18 @@ class Graph {
     this.mine.forEach((row,i) => {
       let tmpRow = row.slice();
       tmpRow.forEach((el, j) => {
-        // debugger
+        // 
         if (el.profit !== null){
           // this.innerNodeCount++;
           let newPos = this.findNodeNum(i,j,this.mine);
           if (el.profit > 0) this.matrix[0][newPos] = el.profit;
           else if (el.profit < 0) this.matrix[newPos][this.matrix.length - 1] = (-1*el.profit);
           let aboves = this.findBlocksAbove(i,j,this.mine);
-          // debugger
+          // 
           aboves.forEach(pos => {
             el;
             mineObj;
-            // debugger
+            // 
             let intRow = this.findNodeNum(i,j,this.mine);
             let intCol = this.findNodeNum(pos[0],pos[1],this.mine);
             this.matrix[intRow][intCol] = this.infCapacity;
@@ -118,26 +118,26 @@ class Graph {
     })
     this.nodes.unshift({label: "s", index: 0, profit: null, fixed: true, x: this.svgWidth/2, y: this.svgHeight-25});
     this.nodes.push({label: "t", index: matrixSize-1, profit: null, fixed: true, x: this.svgWidth/2, y: 50});
-    debugger;
+    ;
   }
 
   populateLinks(){
     let linkId = 0;
-    // debugger
+    // 
     this.matrix.forEach((row,i) => {
       row.forEach((el,j) => {
         if (el > 0){
-          // debugger
+          // 
           this.links.push({source: i, target: j, res: 0, capacity: el, id: linkId});
           linkId = linkId + 1;
         }
       })
     })
-    debugger
+    
   }
 
   passProfit(profit){
-    debugger
+    
     this.solver.currentProfit = this.solver.currentProfit + profit;
   }
 
@@ -147,17 +147,17 @@ class Graph {
     .nodes(d3.values(this.nodes))
     .links(this.links)
     .on("tick", () => {
-      // debugger
+      // 
       this.node.attr('cx', function(d) {
-        // debugger
+        // 
         return d.x;
       })
       .attr('cy', function(d) { return d.y; })
       .attr("transform", function(d) { return `translate(${d.x},${d.y})`; });
 
-      // debugger
+      // 
       this.link.attr('x1', function(d) {
-        // debugger
+        // 
         return d.source.x; })
       .attr('y1', function(d) { return d.source.y; })
       .attr('x2', function(d) { return d.target.x; })
@@ -233,7 +233,7 @@ class Graph {
       this.node.append("circle")
       .attr('r', 12)
       .attr("fill", function(d) {
-        // debugger
+        // 
         if (d.label === "s"){
           return "#ce9308"
         }else if (d.label === "t"){
@@ -315,7 +315,7 @@ class Graph {
               .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
               .attr('fill', '#ccc')
 
-    debugger
+    
     this.addListeners();
     this.solver = new Solver(this.stepping, this.playback, this.count, this.matrix, this.parent, this.max_flow, this.svgGraph, this.mineSvg, this.mine, this.currentProfit);
   }

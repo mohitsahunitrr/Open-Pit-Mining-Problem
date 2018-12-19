@@ -87,10 +87,10 @@ class Mine {
         last--;
       }
       result.push(rowEnds);
-      // debugger
+      // 
     })
     this.nodeLayers = result;
-    debugger
+    
   }
 
   drawMine(){
@@ -105,7 +105,7 @@ class Mine {
             return obj.profit === block.profit
           })[0].color
         }
-        // debugger
+        // 
         this.blocks.push({profit: block.profit, row: i, col: j, color})
       })
     })
@@ -114,7 +114,7 @@ class Mine {
     .enter().append("g")
     .attr("class","block")
 
-    // debugger
+    // 
     this.block.append("rect")
     .attr("x", function(d){
       return 100 + 100*d.col
@@ -154,7 +154,7 @@ class Mine {
     .attr("cy",100)
     .attr("r",20)
     .attr("fill",function(d){
-      // debugger
+      // 
       return d.color
     })
   }
@@ -185,20 +185,20 @@ class Mine {
         //   })
         //   .attr("fill","white");
         //   this.svg.selectAll(".block").attr("fill",function(d){
-        //     debugger
+        //     
         //   });
         // })
 
         tmpBlock.addEventListener("click", e => {
-          // debugger
+          // 
           this.svg.selectAll("rect").filter((d) => {
-            // debugger
+            // 
             if (`rect:${d.row}-${d.col}` === e.currentTarget.id){
               // this.mine[d.row][d.col].color = this.currentBlockType.color;
               const updatableObj = this.blocks.filter(block => (block.col === d.col && block.row === d.row))[0];
               updatableObj.profit = this.currentBlockType.profit;
               updatableObj.color = this.currentBlockType.color
-              debugger
+              
               return true;
             }
           })
@@ -206,9 +206,9 @@ class Mine {
 
 
           let indices = e.currentTarget.id.split(":")[1].split("-");
-          // debugger
+          // 
           this.mine[Number(indices[0])][Number(indices[1])].profit = this.currentBlockType.profit;
-          debugger
+          
 
 
           this.graph.clearGraph();
@@ -216,32 +216,32 @@ class Mine {
           this.graph.populateLinks();
           this.presentGraph();
 
-          // debugger
+          // 
           // this.svg.selectAll(".block").attr("fill","white");
         })
         //
       }
       })
       this.blockSelectors.forEach(selector => {
-        // debugger
+        // 
         let tmpSelector = document.getElementById(`circleSelector:${selector.id}`)
         tmpSelector.addEventListener("click", e => {
-          // debugger
+          // 
 
           this.svg.selectAll(".circleSelector")
           .style("stroke-width", "3")
           .style("stroke",(d) => {
             if (e.currentTarget.id.split(":")[1] === `${d.id}`){
               this.currentBlockType = d;
-              // debugger
+              // 
               return "red";
             }else{
-              // debugger
+              // 
               return "none";
             }
-            // debugger
+            // 
           })
-          // debugger
+          // 
         }
     )}
   )}
