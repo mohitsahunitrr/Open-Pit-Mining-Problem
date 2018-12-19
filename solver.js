@@ -1,5 +1,5 @@
 class Solver {
-  constructor(stepping, playback, count, matrix, parent, max_flow, svgGraph, mineSvg, mine){
+  constructor(stepping, playback, count, matrix, parent, max_flow, svgGraph, mineSvg, mine, currentProfit){
     // debugger
     this.stepping = stepping;
     this.playback = playback;
@@ -13,8 +13,11 @@ class Solver {
     this.animationInterval = 300;
     this.mineSvg = mineSvg;
     this.mine = mine;
+    this.reducer = (acc, el) => acc + el;
+    this.maxProfit = this.matrix[0].reduce(this.reducer);
     this.solution;
     this.colorMap = {"#8B4513": "rust", "#FFD700": "gold", "#c8c8c8": "silver", "#bdad9c": "stone"};
+    this.currentProfit = 0;
   }
 
   setup(){
@@ -245,6 +248,35 @@ class Solver {
           }
         })
       }this.solution = solution;
+      const totalProfit = this.matrix[0].reduce(this.reducer);
+
+      this.mineSvg.selectAll(".profit").transition().duration(1000)
+      .attr("transform", d => {
+          return `translate(${120}, ${10})`
+      })
+
+      this.mineSvg.selectAll(".maxProfit")
+      .text(`The most you could have earned is $${totalProfit}k`)
+
+      this.mineSvg.selectAll(".profitSummary")
+      .text(`You missed out on $${totalProfit - this.currentProfit}k!`)
+
+      setTimeout(() => {
+        debugger
+        this.mineSvg.selectAll(".maxProfit").transition().duration(1000)
+        .attr("transform", d => {
+          return `translate(${120}, ${45})`
+        })
+      }, 1000)
+
+      setTimeout(() => {
+        debugger
+        this.mineSvg.selectAll(".profitSummary").transition().duration(1000)
+        .attr("transform", d => {
+          return `translate(${120}, ${70})`
+        })
+      }, 2000)
+
 
       this.highlightSolution(solution,0,solutionEdges);
       // debugger

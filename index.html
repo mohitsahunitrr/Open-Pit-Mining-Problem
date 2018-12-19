@@ -14,27 +14,41 @@
     <title>Miner</title>
   </head>
   <body id="body">
-
-    <h1>The Open Pit Mining Problem</h1>
+    <div class="top-items">
+      <h1>The Open Pit Mining Problem</h1>
+      <div class="personal-links">
+        <a href="https://github.com/nrice95">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/nathan-rice-a7922813a/">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+        <a href="https://github.com/nrice95">
+<i class="fas fa-mouse-pointer"></i>
+        </a>
+      </div>
+    </div>
     <div class="visuals">
       <div class="mine-items">
         <div class="mine-text">
           <h2 class="the-mine">The Problem</h2>
-          <h2>Select blocks from the grid below to try to make as much money as possible.</h2>
+          <h2>Click and select blocks from the grid below to try to earn <br>yourself as much money as possible.</h2>
           <h2>Then <strong class="strong-run"> Run </strong> the algorithm to see how well you did!</h2>
         </div>
-        <div class="mine-buttons">
           <!-- <button class="mine-button" type="button" id="select-guess">
             <label>
               Select a Guess
             </label>
           </button> -->
           <!-- <button class="mine-button" type="button" id="add-row">Add Row</button>
-          <button class="mine-button" type="button" id="remove-row">Remove Row</button>
           <button class="mine-button" type="button" id="reset-graph-and-mine">Reset Mine</button> -->
-        </div>
         <div class="svgKeys">
-
+        </div>
+        <div class="mine-buttons">
+          <button class="reset-guess-button" type="button" id="clear-guess">Clear Guess</button>
+          <button class="undo-guess-button" type="button" id="undo-guess">Undo Guess</button>
+          <button class="scramble-blocks-button" type="button" id="scramble-blocks">Scramble Blocks</button>
+          <button class="mine-button" type="button" id="reset-graph-and-mine">Reset All</button>
         </div>
         <div class="svgMineBody">
         </div>
@@ -50,14 +64,7 @@
         <div class="svgGraphBody">
         </div>
       </div>
-      <!-- <div class="personal-links">
-        <a href="https://github.com/nrice95">
-          <i class="fab fa-github"></i>
-        </a>
-        <a href="https://www.linkedin.com/in/nathan-rice-a7922813a/">
-          <i class="fab fa-linkedin-in"></i>
-        </a>
-      </div> -->
+
     </div>
   </body>
 </html>

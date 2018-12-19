@@ -30,6 +30,7 @@ class Graph {
     this.stepping = false;
     // debugger
     this.solver;// = new Solver();
+    this.currentProfit;
   }
 
   clearGraph(){
@@ -133,6 +134,11 @@ class Graph {
       })
     })
     debugger
+  }
+
+  passProfit(profit){
+    debugger
+    this.solver.currentProfit = this.solver.currentProfit + profit;
   }
 
   renderGraph(){
@@ -311,7 +317,7 @@ class Graph {
 
     debugger
     this.addListeners();
-    this.solver = new Solver(this.stepping, this.playback, this.count, this.matrix, this.parent, this.max_flow, this.svgGraph, this.mineSvg, this.mine);
+    this.solver = new Solver(this.stepping, this.playback, this.count, this.matrix, this.parent, this.max_flow, this.svgGraph, this.mineSvg, this.mine, this.currentProfit);
   }
 
   addListeners(){

@@ -2,7 +2,80 @@ import Graph from "./graph.js";
 
 class Mine {
   constructor(){
-    this.mine = [
+    this.mineIndex = 2;
+    this.mineOptions = [
+      [
+        [
+          {profit: -3, idx: 7},
+          {profit: -1, idx: 8},
+          {profit: -3, idx: 9},
+          {profit: -3, idx: 10},
+          {profit: -3, idx: 11},
+          // {profit: -2, idx: 14}
+        ],
+        [
+          {profit: -1, idx: 3},
+          {profit: 2, idx: 4},
+          {profit: 5, idx: 5},
+          {profit: 5, idx: 6},
+          // {profit: -1, idx: 9}
+        ],
+        [
+          {profit: 5, idx: 0},
+          {profit: 5, idx: 1},
+          {profit: 2, idx: 2},
+          // {profit: 1, idx: 4}
+        ]
+      ],
+      [
+        [
+          {profit: -3, idx: 7},
+          {profit: 5, idx: 8},
+          {profit: -1, idx: 9},
+          {profit: -1, idx: 10},
+          {profit: -3, idx: 11},
+          // {profit: -2, idx: 14}
+        ],
+        [
+          {profit: -1, idx: 3},
+          {profit: -3, idx: 4},
+          {profit: 5, idx: 5},
+          {profit: 5, idx: 6},
+          // {profit: -1, idx: 9}
+        ],
+        [
+          {profit: -1, idx: 0},
+          {profit: 5, idx: 1},
+          {profit: 2, idx: 2},
+          // {profit: 1, idx: 4}
+        ]
+      ],
+      [
+        [
+          {profit: -1, idx: 7},
+          {profit: -1, idx: 8},
+          {profit: -3, idx: 9},
+          {profit: 2, idx: 10},
+          {profit: 2, idx: 11},
+          // {profit: -2, idx: 14}
+        ],
+        [
+          {profit: 5, idx: 3},
+          {profit: -3, idx: 4},
+          {profit: 5, idx: 5},
+          {profit: -1, idx: 6},
+          // {profit: -1, idx: 9}
+        ],
+        [
+          {profit: -1, idx: 0},
+          {profit: 2, idx: 1},
+          {profit: 5, idx: 2},
+          // {profit: 1, idx: 4}
+        ]
+      ]
+    ]
+    this.mine = this.mineOptions[this.mineIndex]
+    // [
       // [
       //   {profit: -1, idx: 3},
       //   {profit: -1, idx: 4},
@@ -35,28 +108,30 @@ class Mine {
       //   {profit: -1, idx: 17},
       //   // {profit: -1, idx: 14}
       // ],
-      [
-        {profit: -3, idx: 7},
-        {profit: -1, idx: 8},
-        {profit: -3, idx: 9},
-        {profit: -3, idx: 10},
-        {profit: -3, idx: 11},
-        // {profit: -2, idx: 14}
-      ],
-      [
-        {profit: -1, idx: 3},
-        {profit: 2, idx: 4},
-        {profit: 5, idx: 5},
-        {profit: 5, idx: 6},
-        // {profit: -1, idx: 9}
-      ],
-      [
-        {profit: 5, idx: 0},
-        {profit: 5, idx: 1},
-        {profit: 2, idx: 2},
-        // {profit: 1, idx: 4}
-      ]
-    ];
+    //   [
+    //     {profit: -3, idx: 7},
+    //     {profit: -1, idx: 8},
+    //     {profit: -3, idx: 9},
+    //     {profit: -3, idx: 10},
+    //     {profit: -3, idx: 11},
+    //     // {profit: -2, idx: 14}
+    //   ],
+    //   [
+    //     {profit: -1, idx: 3},
+    //     {profit: 2, idx: 4},
+    //     {profit: 5, idx: 5},
+    //     {profit: 5, idx: 6},
+    //     // {profit: -1, idx: 9}
+    //   ],
+    //   [
+    //     {profit: 5, idx: 0},
+    //     {profit: 5, idx: 1},
+    //     {profit: 2, idx: 2},
+    //     // {profit: 1, idx: 4}
+    //   ]
+    // ];
+    this.guessStack = [];
+    this.profitStack = [];
     this.currentProfit = 0;
     this.guessing = true;
     this.blockLabelList = "abcdefghijklmnopqruvwxyz"
@@ -67,7 +142,7 @@ class Mine {
     this.findNumBlocks();
     this.block;
     this.svg = d3.select(".svgMineBody").append("svg").attr("class","mineSvg").attr("width", 700).attr("height", window.innerHeight-450)
-    this.svgKeys = d3.select(".svgKeys").append("svg").attr("class","keysSvg").attr("width", 700).attr("height", 170)
+    this.svgKeys = d3.select(".svgKeys").append("svg").attr("class","keysSvg").attr("width", 700).attr("height", 110)
     this.blocks = [];
     this.blockSelectors = [
       {id: 0, color: "#FFD700", profit: 5, type: "selector", texture: "gold"},
@@ -213,6 +288,34 @@ class Mine {
     .attr("dy", "1em")
     .style("fill", d => "white")
     .text((d) => `Your Current Profit: $${this.currentProfit}k`)
+    .style("font-weight", 600)
+    .style("font-size", 24)
+    .style("stroke-width",0)
+
+    this.svg.append("text")
+    .attr("class","maxProfit")
+    .attr("transform", d => {
+      return `translate(${-1000}, ${45})`
+    })
+    .attr("id", `maxProfit`)
+    .attr("dx", "3.2em")
+    .attr("dy", "1em")
+    .style("fill", d => "white")
+    .text((d) => "")
+    .style("font-weight", 600)
+    .style("font-size", 24)
+    .style("stroke-width",0)
+
+    this.svg.append("text")
+    .attr("class","profitSummary")
+    .attr("transform", d => {
+      return `translate(${-1000}, ${70})`
+    })
+    .attr("id", `profitSummary`)
+    .attr("dx", "3.2em")
+    .attr("dy", "1em")
+    .style("fill", d => "white")
+    .text((d) => "")
     .style("font-weight", 600)
     .style("font-size", 24)
     .style("stroke-width",0)
@@ -562,29 +665,10 @@ class Mine {
   }
 
   reset(){
-    this.mine =  [
-      [
-        {profit: -3, idx: 7},
-        {profit: -1, idx: 8},
-        {profit: -3, idx: 9},
-        {profit: -3, idx: 10},
-        {profit: -3, idx: 11},
-        // {profit: -2, idx: 14}
-      ],
-      [
-        {profit: -1, idx: 3},
-        {profit: 2, idx: 4},
-        {profit: 5, idx: 5},
-        {profit: 5, idx: 6},
-        // {profit: -1, idx: 9}
-      ],
-      [
-        {profit: 5, idx: 0},
-        {profit: 5, idx: 1},
-        {profit: 2, idx: 2},
-        // {profit: 1, idx: 4}
-      ]
-    ];
+    this.mine = this.mineOptions[this.mineIndex];
+    this.graph.solver.playback = false;
+    this.currentProfit = 0;
+    this.svg.selectAll(".profit").transition().duration(1).text(`Your Current Profit: $${this.currentProfit}k`);
     this.updateNodeLayers(this.mine);
     this.clearMine();
     this.drawMine();
@@ -614,12 +698,57 @@ class Mine {
     return result;
   }
 
+  clearGuess(){
+    debugger
+    this.svg.selectAll("rect").style("stroke", d => {
+      this.blocks[this.findBlockIndex(d.row,d.col)].border = "black";
+      return "black"
+    })
+    const lastProfit = this.currentProfit;
+    this.currentProfit = 0;
+    this.graph.passProfit(-1 * lastProfit);
+    this.svg.selectAll(".profit").transition().duration(1).text(`Your Current Profit: $${this.currentProfit}k`);
+  }
+
+  undoGuess(){
+    if (this.guessStack.length > 0){
+      const last = this.guessStack.pop();
+      debugger
+
+      this.svg.selectAll("rect").filter(d => last.includes(`rect:${d.row}-${d.col}`))
+      .style("stroke", d => {
+        this.blocks[this.findBlockIndex(d.row,d.col)].border = "black";
+        return "black"
+      })
+      const lastProfit = this.profitStack.pop();
+      this.currentProfit = this.currentProfit - lastProfit;
+      this.graph.passProfit(lastProfit);
+      this.svg.selectAll(".profit").transition().duration(1).text(`Your Current Profit: $${this.currentProfit}k`)
+    }
+  }
+
+  scramble(){
+    this.clearGuess();
+    this.mineIndex = (this.mineIndex + 1) % 3;
+    this.mine = this.mineOptions[this.mineIndex];
+    this.updateNodeLayers(this.mine);
+    this.clearMine();
+    this.drawMine();
+    this.graph.clearGraph();
+    this.graph.generateMatrixFromMine(this);
+    this.graph.populateLinks();
+    this.presentGraph();
+  }
+
   addListeners(){
     const html = document.getElementById("body");
 
-    // document.getElementById("add-row").onclick = () => this.addRow();
+    document.getElementById("clear-guess").onclick = () => this.clearGuess();
+    document.getElementById("undo-guess").onclick = () => this.undoGuess();
     // document.getElementById("remove-row").onclick = () => this.removeRow();
-    // document.getElementById("reset-graph-and-mine").onclick = () => this.reset();
+    document.getElementById("reset-graph-and-mine").onclick = () => this.reset();
+    document.getElementById("scramble-blocks").onclick = () => this.scramble();
+
     // document.getElementById("select-guess").onclick = () => {
     //   // html.classList.toggle('active');
     //   this.guessing = true
@@ -638,7 +767,7 @@ class Mine {
             this.svg.selectAll("rect").filter(function(d){
               return aboves.includes(`rect:${d.row}-${d.col}`);
             })
-            .style("stroke", "red")
+            .style("stroke", "#f442aa")
             .style("stroke-width", 2)
           }
         })
@@ -659,22 +788,31 @@ class Mine {
         tmpBlock.addEventListener("click", e => {
           if (this.guessing){
             const aboves = this.findAboves(e.currentTarget.id)
+            const tmpArr = [];
+            let tmpProfit = 0
             this.svg.selectAll("rect").filter((d) => {
               // debugger
               if (aboves.includes(`rect:${d.row}-${d.col}`)){
-                debugger
-                if (d.border === "black") this.currentProfit = this.currentProfit + d.profit;
+                // debugger
+                if (d.border === "black") {
+                  this.currentProfit = this.currentProfit + d.profit
+                  tmpProfit = tmpProfit + d.profit;
+                  tmpArr.push(`rect:${d.row}-${d.col}`)
+                };
                 return true;
               }else{
                 return false;
               }
             })
             .style("stroke", d => {
-              this.blocks[this.findBlockIndex(d.row,d.col)].border = "red";
-              return "red"
+              this.blocks[this.findBlockIndex(d.row,d.col)].border = "#f442aa";
+              return "#f442aa"
             })
             .style("stroke-width", 2)
-
+            debugger
+            this.guessStack.push(tmpArr);
+            this.profitStack.push(tmpProfit);
+            this.graph.passProfit(tmpProfit);
             this.svg.selectAll(".profit").transition().duration(1).text(`Your Current Profit: $${this.currentProfit}k`)
           }else{
             let updatableObj;
