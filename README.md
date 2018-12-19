@@ -1,7 +1,6 @@
-# nrice95.github.io
+# Open-Pit-Mining-Problem
 
-
-Still ToDo (I'm about a day behind schedule):
+Still ToDo:
 
 -Add edge capacity labels to graph
 
@@ -26,8 +25,10 @@ Technologies include vanilla JS, CSS, and HTML (at least I think that’s all I�
 Some mvps:
 
 The Backend
-
-Implement “backend” logic, code algorithm in javascript and create 2 or 3 seed cases Basic graph
-Render the initial graph G from the algorithm, include arrows + node edge capacity labels Dynamic graph
-Add motion to the graph in sync with the algo being solved. Ideally the flows will crawl up the length of the edge, rather than having the edge simply change colors like in the example above Dynamic graph + static and dynamic pit animation
-Wrap up the dynamic graph stuff and render the pit (which will hopefully not be too challenging once I’ve gotten a handle on how to get the graph working)
+- Implement “backend” logic, code algorithm in javascript and create 2 or 3 seed cases
+Basic graph
+- Render the initial graph G from the algorithm, include arrows + node edge capacity labels
+Dynamic graph
+- Add motion to the graph in sync with the algo being solved. Ideally the flows will crawl up the length of the edge, rather than having the edge simply change colors like in the example above
+Dynamic graph + static and dynamic pit animation
+- Wrap up the dynamic graph stuff and render the pit (which will hopefully not be too challenging once I’ve gotten a handle on how to get the graph working)
